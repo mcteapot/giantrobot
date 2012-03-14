@@ -1,9 +1,7 @@
-// Shooter by Arjun Prakash
+// Gyant Robot by Arjun Prakash
 // Input.js
 
 // ## Movement Functions
-
-var mouseX;
 
 function onDocumentMouseDown( event ) {
 
@@ -15,6 +13,7 @@ function onDocumentMouseDown( event ) {
 
 	mouseXOnMouseDown = event.clientX - windowHalfX;
 	targetRotationOnMouseDown = targetRotation;
+
 }
 
 function onDocumentMouseMove( event ) {
@@ -22,6 +21,7 @@ function onDocumentMouseMove( event ) {
 	mouseX = event.clientX - windowHalfX;
 
 	targetRotation = targetRotationOnMouseDown + ( mouseX - mouseXOnMouseDown ) * 0.02;
+
 }
 
 function onDocumentMouseUp( event ) {
@@ -29,6 +29,7 @@ function onDocumentMouseUp( event ) {
 	document.removeEventListener( 'mousemove', onDocumentMouseMove, false );
 	document.removeEventListener( 'mouseup', onDocumentMouseUp, false );
 	document.removeEventListener( 'mouseout', onDocumentMouseOut, false );
+
 }
 
 function onDocumentMouseOut( event ) {
@@ -36,6 +37,7 @@ function onDocumentMouseOut( event ) {
 	document.removeEventListener( 'mousemove', onDocumentMouseMove, false );
 	document.removeEventListener( 'mouseup', onDocumentMouseUp, false );
 	document.removeEventListener( 'mouseout', onDocumentMouseOut, false );
+
 }
 
 function onDocumentTouchStart( event ) {
@@ -48,6 +50,7 @@ function onDocumentTouchStart( event ) {
 		targetRotationOnMouseDown = targetRotation;
 
 	}
+
 }
 
 function onDocumentTouchMove( event ) {
@@ -60,6 +63,7 @@ function onDocumentTouchMove( event ) {
 		targetRotation = targetRotationOnMouseDown + ( mouseX - mouseXOnMouseDown ) * 0.05;
 
 	}
+
 }
 
 
@@ -71,7 +75,6 @@ function onKeyDown( event ) {
 		case 13: /*Enter*/ controlsRobotHead.fire = true; break;
 
 	}
-
 
 }
 

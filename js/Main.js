@@ -24,9 +24,7 @@ var targetRotationOnMouseDown = 0;
 var windowHalfX = window.innerWidth / 2;
 var windowHalfY = window.innerHeight / 2;
 
-var robotBody, robotHead, robotEyes;
-
-var vernon;
+var robotVernon;
 
 var mouseX = 0;
 var mouseY = 0;
@@ -39,15 +37,15 @@ var controlsRobotHead = {
 
 
 
-//callbackShip   = function( geometry ) { creategGeometry( geometry,  0, 0, 0, 0.05 ) };
 // Load 3d objects
 var loader = new THREE.JSONLoader();
 
 
 
+// ## Run this shit!
+init();
+animate()
 
-	init();
-	animate()
 // ## Initialize everything
 function init() {
 
@@ -84,74 +82,20 @@ function init() {
 
 	// Grid
 
-	var line_material = new THREE.LineBasicMaterial( { color: 0xcccccc, opacity: 0.2 } ),
-		geometry = new THREE.Geometry(),
-		floor = -0.04, step = 5, size = 100;
-
-	for ( var i = 0; i <= size / step * 2; i ++ ) {
-
-		geometry.vertices.push( new THREE.Vertex( new THREE.Vector3( - size, floor, i * step - size ) ) );
-		geometry.vertices.push( new THREE.Vertex( new THREE.Vector3(   size, floor, i * step - size ) ) );
-
-		geometry.vertices.push( new THREE.Vertex( new THREE.Vector3( i * step - size, floor, -size ) ) );
-		geometry.vertices.push( new THREE.Vertex( new THREE.Vector3( i * step - size, floor,  size ) ) );
-
-	}
-
-	var line = new THREE.Line( geometry, line_material, THREE.LinePieces );
-	scene.add( line );
+	scene.add( createGrid() );
 
 	// Creat Robot
-	vernon = new THREE.Robot();
 
-	vernon.callback =  function( object ) {
-		addRobot(object, 0, 0, 0, 0);
+	robotVernon = new THREE.Robot();
+
+	robotVernon.callback =  function( object ) {
+
+		addRobot(object, 0, 0, 0, 1);
 
 	};
-	vernon.loadPartsJSON( "./assets/robotBody.js", scene );
 
+	robotVernon.loadPartsJSON( "./assets/robotBody.js", "./assets/robotHead.js", "./assets/robotEyes.js" );
 
-
-	// JSON obejcts
-/*
-	loader.load( "./assets/robotBody.js",  function( geometry ) {
-		var material = new THREE.MeshPhongMaterial();
-		material.color = new THREE.Color().setRGB(0.8549019607843137,0.8666666666666667,0.9215686274509803);
-		material.ambient = new THREE.Color().setRGB(0,0.3333333333333333,1);
-		material.specular = new THREE.Color().setRGB(0,0.3333333333333333,1);
-
-		robotBody = creategGeometry( geometry,  material, 0, 0, 0, 1 );
-		robotBody.position.set(0,0,0);
-		robotBody.rotation.set(0,0,0);
-		robotBody.scale.set(1,1,1);
-		scene.add( robotBody );
-	} );
-	loader.load( "./assets/robotHead.js",  function( geometry ) {
-		var material = new THREE.MeshPhongMaterial();
-		material.color = new THREE.Color().setRGB(0.9411764705882353,0.9490196078431372,0.9803921568627451);
-		material.ambient = new THREE.Color().setRGB(1,0,0.08235294117647059);
-		material.specular = new THREE.Color().setRGB(0,0.25098039215686274,1);
-
-		robotHead = creategGeometry( geometry,  material, 0, 0, 0, 1 );
-		robotHead.position.set(0,77.01283547257887,0);
-		robotHead.rotation.set(0,0,0);
-		robotHead.scale.set(1,1,1);
-		scene.add( robotHead );
-	} );
-
-	loader.load( "./assets/robotEyes.js",  function( geometry ) {
-		var material = new THREE.MeshPhongMaterial();
-		material.color = new THREE.Color().setRGB(0.9411764705882353,0.9490196078431372,0.9803921568627451);
-		material.ambient = new THREE.Color().setRGB(1,0,0.08235294117647059);
-		material.specular = new THREE.Color().setRGB(0,0.25098039215686274,1);
-
-		robotEyes = creategGeometry( geometry,  material, 0, 0, 0, 1 );
-		robotEyes.position.set(0,77.01283547257887,0);
-		robotEyes.rotation.set(0,0,0);
-		robotEyes.scale.set(1,1,1);
-		scene.add( robotEyes );
-	} );
-*/
 	
 	// Lights
 	//scene.add( new THREE.AmbientLight( 0xcccccc ) );
@@ -194,7 +138,8 @@ function init() {
 	//document.addEventListener( 'mousedown', onDocumentMouseDown, false );
 	//document.addEventListener( 'touchstart', onDocumentTouchStart, false );
 	//document.addEventListener( 'touchmove', onDocumentTouchMove, false );
-} //init()
+	
+} 
 
 
 // ## Animate and Display the Scene
@@ -204,13 +149,12 @@ function animate() {
 	render();
 	stats.update();
 
-} //animate()
+} 
 
 // ## Render the 3D Scene
 function render() {
 
 	var delta = Date.now() * 0.0005;
-
 
 	//head.rotation.x =+ (targetRotation - head.rotation.x) * 0.08;
 	//head.rotation.y =+ (targetRotation - head.rotation.y) * 0.1;
@@ -227,14 +171,7 @@ function render() {
 
 	renderer.render( scene, camera );
 
-} //render()
+} 
 
-
-function addRobot(object, x, y, z, s ) {
-
-	object.root.position.set( x, y, z );
-	scene.add( object.root );
-
-}
 
 

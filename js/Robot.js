@@ -1,8 +1,10 @@
 
 
 THREE.Robot = function() {
-	var scope = this;
+	
+	// ##Object Properties
 
+	var scope = this;
 
 	// robot geometry manual parameters
 
@@ -22,7 +24,8 @@ THREE.Robot = function() {
 	this.eyesMesh = null;
 
 	this.bodyGeometry = null;
-
+	this.headGeometry = null;
+	this.eyesGeometry = null;
 
 	// internal helper variables
 
@@ -30,48 +33,88 @@ THREE.Robot = function() {
 
 	this.meshes = [];
 
-	// API
+	// ##API
 
-	this.loadPartsJSON = function ( bodyURL, scene ) { 
+	this.loadPartsJSON = function ( bodyURL, headURL, eyesURL ) { 
+
 		var loader = new THREE.JSONLoader();
 
 		loader.load( bodyURL, function( geometry ) { createBody( geometry ) } );
-
+		loader.load( headURL, function( geometry ) { createHead( geometry ) } );
+		loader.load( eyesURL, function( geometry ) { createEyes( geometry ) } );
 
 	};
 
 
-	// internal helper methods
+	// ##Internal Helper Methods
 	function createBody( geometry ) {
 
 		console.log( "createBody");
 		scope.bodyGeometry = geometry;
 
 		createRobot();
+
+	};
+
+	function createHead( geometry ) {
+
+		console.log( "createHead");
+		scope.headGeometry = geometry;
+
+		createRobot();
+
+	};
+
+	function createEyes( geometry ) {
+
+		console.log( "createEyes");
+		scope.eyesGeometry = geometry;
+
+		createRobot();
+
 	};
 
 
 	function createRobot() {
-		if (scope.bodyGeometry ) {
+
+		if ( scope.bodyGeometry && scope.headGeometry && scope.eyesGeometry ) {
+
 			console.log( "createRobot");
 
 			// body
 
-			var material = new THREE.MeshPhongMaterial();
-			material.color = new THREE.Color().setRGB(0.8549019607843137,0.8666666666666667,0.9215686274509803);
-			material.ambient = new THREE.Color().setRGB(0,0.3333333333333333,1);
-			material.specular = new THREE.Color().setRGB(0,0.3333333333333333,1);
+			var bodyMaterial = new THREE.MeshPhongMaterial();
+			bodyMaterial.color = new THREE.Color().setRGB( 0.8549019607843137, 0.8666666666666667, 0.9215686274509803 );
+			bodyMaterial.ambient = new THREE.Color().setRGB( 0, 0.3333333333333333, 1 );
+			bodyMaterial.specular = new THREE.Color().setRGB( 0, 0.3333333333333333, 1);
 
-			scope.bodyMesh = new THREE.Mesh( scope.bodyGeometry, material );
-			scope.bodyMesh.position.set(0,0,0);
-			scope.bodyMesh.rotation.set(0,0,0);
-			scope.bodyMesh.scale.set(1,1,1);
+			scope.bodyMesh = creategGeometry( scope.bodyGeometry, bodyMaterial, 0, 0, 0, scope.modelScale );
+
+			// head
+
+			var headMaterial = new THREE.MeshPhongMaterial();
+			headMaterial.color = new THREE.Color().setRGB( 0.9411764705882353,0.9490196078431372,0.9803921568627451 );
+			headMaterial.ambient = new THREE.Color().setRGB( 1, 0, 0.08235294117647059 );
+			headMaterial.specular = new THREE.Color().setRGB( 0, 0.25098039215686274, 1 );
+
+			scope.headMesh = creategGeometry( scope.headGeometry, headMaterial, 0, 77.01283547257887, 0, scope.modelScale );
+
+			// eyes
+
+			var eyesMaterial = new THREE.MeshPhongMaterial();
+			eyesMaterial.color = new THREE.Color().setRGB( 0.9411764705882353, 0.9490196078431372, 0.9803921568627451 );
+			eyesMaterial.ambient = new THREE.Color().setRGB( 1, 0, 0.08235294117647059 );
+			eyesMaterial.specular = new THREE.Color().setRGB( 0, 0.25098039215686274, 1 );
+
+			scope.eyesMesh = creategGeometry( scope.eyesGeometry, eyesMaterial, 0, 0, 0, scope.modelScale );
 
 			scope.root.add( scope.bodyMesh );
+			scope.headMesh.add( scope.eyesMesh );
+			scope.root.add( scope.headMesh );
 
 			// cache meshes
 
-			scope.meshes = [ scope.bodyMesh ];
+			scope.meshes = [ scope.bodyMesh, scope.headMesh, scope.eyesMesh ];
 
 			// callback
 
@@ -79,7 +122,8 @@ THREE.Robot = function() {
 
 
 			if ( scope.callback ) {
-				console.log( "callback");
+
+				console.log( "callback" );
 
 				scope.callback( scope );
 
@@ -90,25 +134,22 @@ THREE.Robot = function() {
 
 	};
 
-	function creategGeometry( geometry, material, x, y, z, b ) {
-		console.log( "Body Geometry")
+	function creategGeometry( geometry, material, x, y, z, s ) {
+
+		console.log( "Body Geometry");
 		var mesh = new THREE.Mesh( geometry, material );
 		mesh.position.set( x, y, z );
-		mesh.scale.set( b, b, b);
+		mesh.rotation.set( 0 ,0 ,0 );
+		mesh.scale.set( s, s, s);
 		mesh.overdraw = true;
 		return mesh;
 
 	};
 
 	function finishLoading() {
-		console.log( "finishLoading")
-		console.log(scope.bodyMesh);
-		console.log(scope.modelScale);
+		
+		console.log( "finishLoading" );
 
-	};
-
-	this.addToScene = function ( scene ) {
-		scene.add( this.bodyMesh );
 	};
 
 
