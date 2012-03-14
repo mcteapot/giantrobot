@@ -1,5 +1,4 @@
 
-
 THREE.Robot = function() {
 	
 	// ##Object Properties
@@ -88,7 +87,7 @@ THREE.Robot = function() {
 			bodyMaterial.ambient = new THREE.Color().setRGB( 0, 0.3333333333333333, 1 );
 			bodyMaterial.specular = new THREE.Color().setRGB( 0, 0.3333333333333333, 1);
 
-			scope.bodyMesh = creategGeometry( scope.bodyGeometry, bodyMaterial, 0, 0, 0, scope.modelScale );
+			scope.bodyMesh = createGeometry( scope.bodyGeometry, bodyMaterial, 0, 0, 0, scope.modelScale );
 
 			// head
 
@@ -97,7 +96,7 @@ THREE.Robot = function() {
 			headMaterial.ambient = new THREE.Color().setRGB( 1, 0, 0.08235294117647059 );
 			headMaterial.specular = new THREE.Color().setRGB( 0, 0.25098039215686274, 1 );
 
-			scope.headMesh = creategGeometry( scope.headGeometry, headMaterial, 0, 77.01283547257887, 0, scope.modelScale );
+			scope.headMesh = createGeometry( scope.headGeometry, headMaterial, 0, 77.01283547257887, 0, scope.modelScale );
 
 			// eyes
 
@@ -106,7 +105,7 @@ THREE.Robot = function() {
 			eyesMaterial.ambient = new THREE.Color().setRGB( 1, 0, 0.08235294117647059 );
 			eyesMaterial.specular = new THREE.Color().setRGB( 0, 0.25098039215686274, 1 );
 
-			scope.eyesMesh = creategGeometry( scope.eyesGeometry, eyesMaterial, 0, 0, 0, scope.modelScale );
+			scope.eyesMesh = createGeometry( scope.eyesGeometry, eyesMaterial, 0, 0, 0, scope.modelScale );
 
 			scope.root.add( scope.bodyMesh );
 			scope.headMesh.add( scope.eyesMesh );
@@ -134,7 +133,7 @@ THREE.Robot = function() {
 
 	};
 
-	function creategGeometry( geometry, material, x, y, z, s ) {
+	function createGeometry( geometry, material, x, y, z, s ) {
 
 		console.log( "Body Geometry");
 		var mesh = new THREE.Mesh( geometry, material );
