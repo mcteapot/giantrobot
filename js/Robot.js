@@ -1,5 +1,4 @@
 
-
 THREE.Robot = function() {
 	
 	// ##Object Properties
@@ -134,7 +133,7 @@ THREE.Robot = function() {
 
 	};
 
-	function creategGeometry( geometry, material, x, y, z, s ) {
+	function createGeometry( geometry, material, x, y, z, s ) {
 
 		console.log( "Body Geometry");
 		var mesh = new THREE.Mesh( geometry, material );
