@@ -1,6 +1,5 @@
-// Shooter by Arjun Prakash
-// 01.29.12
-// schooter.js
+// Gyant Robot by Arjun Prakash
+// Main.js
 
 // checks for webGL support
 if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
@@ -27,6 +26,8 @@ var windowHalfY = window.innerHeight / 2;
 
 var robotBody, robotHead, robotEyes;
 
+var vernon;
+
 var mouseX = 0;
 var mouseY = 0;
 
@@ -41,6 +42,8 @@ var controlsRobotHead = {
 //callbackShip   = function( geometry ) { creategGeometry( geometry,  0, 0, 0, 0.05 ) };
 // Load 3d objects
 var loader = new THREE.JSONLoader();
+
+
 
 
 	init();
@@ -98,8 +101,19 @@ function init() {
 	var line = new THREE.Line( geometry, line_material, THREE.LinePieces );
 	scene.add( line );
 
-	// JSON obejcts
+	// Creat Robot
+	vernon = new THREE.Robot();
 
+	vernon.callback =  function( object ) {
+		addRobot(object, 0, 0, 0, 0);
+
+	};
+	vernon.loadPartsJSON( "./assets/robotBody.js", scene );
+
+
+
+	// JSON obejcts
+/*
 	loader.load( "./assets/robotBody.js",  function( geometry ) {
 		var material = new THREE.MeshPhongMaterial();
 		material.color = new THREE.Color().setRGB(0.8549019607843137,0.8666666666666667,0.9215686274509803);
@@ -137,7 +151,7 @@ function init() {
 		robotEyes.scale.set(1,1,1);
 		scene.add( robotEyes );
 	} );
-
+*/
 	
 	// Lights
 	//scene.add( new THREE.AmbientLight( 0xcccccc ) );
@@ -216,6 +230,11 @@ function render() {
 } //render()
 
 
+function addRobot(object, x, y, z, s ) {
 
+	object.root.position.set( x, y, z );
+	scene.add( object.root );
+
+}
 
 

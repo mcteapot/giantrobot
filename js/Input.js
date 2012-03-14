@@ -1,6 +1,5 @@
 // Shooter by Arjun Prakash
-// 01.29.12
-// input.js
+// Input.js
 
 // ## Movement Functions
 
