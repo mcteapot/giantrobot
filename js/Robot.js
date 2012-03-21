@@ -1,23 +1,23 @@
 
+// Gyant Robot by Arjun Prakash
+// Robot.js
 
 THREE.Robot = function() {
 	
+
 	// ##Object Properties
 
 	var scope = this;
 
-	// robot geometry manual parameters
-
-	this.modelScale = 1;
-
 	// internal control variables
 
-	this.headRotationSpeed = 0;
+	this.headRotationSpeedY = 2.5;
+	this.headRotationSpeedZ = 0.3;
+	this.headRotationStartZ = 10.0;
+	this.headRotationClampZ = 2;
+	this.maxHeadRotation = 30;
 
 	// robot rigging
-
-	this.root = new THREE.Object3D();
-
 
 	this.bodyMesh = null;
 	this.headMesh = null;
@@ -27,11 +27,12 @@ THREE.Robot = function() {
 	this.headGeometry = null;
 	this.eyesGeometry = null;
 
+
+
+	// debug flags
+	this.debugHead = false;
+	this.debugControlFlow = false;
 	// internal helper variables
-
-	this.loaded = false;
-
-	this.meshes = [];
 
 	// ##API
 
@@ -45,29 +46,68 @@ THREE.Robot = function() {
 
 	};
 
+	this.headRotation = function ( turnRight, turnLeft ) {
+		if ( turnRight ) {
+			if ( rotationConvertion( "r", this.headMesh.rotation.y) < this.maxHeadRotation ) {
+				this.headMesh.rotation.y = ( this.headMesh.rotation.y + rotationConvertion( "d", this.headRotationSpeedY) );
+				if ( ( rotationConvertion( "r", this.headMesh.rotation.y ) > -this.headRotationClampZ ) &&  (rotationConvertion( "r", this.headMesh.rotation.y ) < this.headRotationClampZ ) ) {
+					this.headMesh.rotation.z =  rotationConvertion( "d", this.headRotationStartZ );
+				} else if ( rotationConvertion( "r", this.headMesh.rotation.y) > 0 ) {
+					this.headMesh.rotation.z = ( this.headMesh.rotation.z + rotationConvertion( "d", this.headRotationSpeedZ ) );
+				} else if ( rotationConvertion( "r", this.headMesh.rotation.y) < 0 ) {
+					this.headMesh.rotation.z = ( this.headMesh.rotation.z - rotationConvertion( "d", this.headRotationSpeedZ ) );
+				} 
+			}
+		}
+
+		if ( turnLeft ) {
+			if ( rotationConvertion( "r", this.headMesh.rotation.y) > -this.maxHeadRotation ) {
+				this.headMesh.rotation.y = ( this.headMesh.rotation.y - rotationConvertion( "d", this.headRotationSpeedY ) );
+				if ( ( rotationConvertion( "r", this.headMesh.rotation.y ) > -this.headRotationClampZ ) &&  ( rotationConvertion( "r", this.headMesh.rotation.y ) < this.headRotationClampZ) ) {
+					this.headMesh.rotation.z =  rotationConvertion( "d", this.headRotationStartZ );
+				} else if ( rotationConvertion( "r", this.headMesh.rotation.y) > 0 ) {
+					this.headMesh.rotation.z = ( this.headMesh.rotation.z - rotationConvertion( "d", this.headRotationSpeedZ ) );
+				} else if ( rotationConvertion( "r", this.headMesh.rotation.y) < 0 ) {
+					this.headMesh.rotation.z = ( this.headMesh.rotation.z + rotationConvertion( "d", this.headRotationSpeedZ ) );
+				} 
+			}
+		}
+
+		if ( this.debugHead ) {
+			console.log("headrotationY " + rotationConvertion( "r", this.headMesh.rotation.y) );
+			console.log("headrotationZ " + rotationConvertion( "r", this.headMesh.rotation.z) );
+		}
+	};
+
 
 	// ##Internal Helper Methods
-	function createBody( geometry ) {
+	createBody = function( geometry ) {
 
-		console.log( "createBody");
+		if ( scope.debugControlFlow ) {
+			console.log( "createBody" );
+		}
 		scope.bodyGeometry = geometry;
 
 		createRobot();
 
 	};
 
-	function createHead( geometry ) {
+	createHead = function( geometry ) {
 
-		console.log( "createHead");
+		if ( scope.debugControlFlow ) {
+			console.log( "createHead" );
+		}
 		scope.headGeometry = geometry;
 
 		createRobot();
 
 	};
 
-	function createEyes( geometry ) {
+	createEyes = function( geometry ) {
 
-		console.log( "createEyes");
+		if ( scope.debugControlFlow ) {
+			console.log( "createEyes" );
+		}
 		scope.eyesGeometry = geometry;
 
 		createRobot();
@@ -75,11 +115,13 @@ THREE.Robot = function() {
 	};
 
 
-	function createRobot() {
+	createRobot = function() {
 
 		if ( scope.bodyGeometry && scope.headGeometry && scope.eyesGeometry ) {
 
-			console.log( "createRobot");
+			if ( scope.debugControlFlow ) {
+				console.log( "createRobot" );
+			}
 
 			// body
 
@@ -88,7 +130,7 @@ THREE.Robot = function() {
 			bodyMaterial.ambient = new THREE.Color().setRGB( 0, 0.3333333333333333, 1 );
 			bodyMaterial.specular = new THREE.Color().setRGB( 0, 0.3333333333333333, 1);
 
-			scope.bodyMesh = creategGeometry( scope.bodyGeometry, bodyMaterial, 0, 0, 0, scope.modelScale );
+			scope.bodyMesh = createGeometry( scope.bodyGeometry, bodyMaterial, 0, 0, 0, 0, 0, 0, scope.modelScale );
 
 			// head
 
@@ -97,7 +139,7 @@ THREE.Robot = function() {
 			headMaterial.ambient = new THREE.Color().setRGB( 1, 0, 0.08235294117647059 );
 			headMaterial.specular = new THREE.Color().setRGB( 0, 0.25098039215686274, 1 );
 
-			scope.headMesh = creategGeometry( scope.headGeometry, headMaterial, 0, 77.01283547257887, 0, scope.modelScale );
+			scope.headMesh = createGeometry( scope.headGeometry, headMaterial, 0, 77.01283547257887, 0, 0, 0, rotationConvertion( "d" , scope.headRotationStartZ ), scope.modelScale );
 
 			// eyes
 
@@ -106,7 +148,7 @@ THREE.Robot = function() {
 			eyesMaterial.ambient = new THREE.Color().setRGB( 1, 0, 0.08235294117647059 );
 			eyesMaterial.specular = new THREE.Color().setRGB( 0, 0.25098039215686274, 1 );
 
-			scope.eyesMesh = creategGeometry( scope.eyesGeometry, eyesMaterial, 0, 0, 0, scope.modelScale );
+			scope.eyesMesh = createGeometry( scope.eyesGeometry, eyesMaterial, 0, 0, 0, 0, 0, 0, scope.modelScale );
 
 			scope.root.add( scope.bodyMesh );
 			scope.headMesh.add( scope.eyesMesh );
@@ -123,9 +165,9 @@ THREE.Robot = function() {
 
 			if ( scope.callback ) {
 
-				console.log( "callback" );
-
 				scope.callback( scope );
+
+				finishLoading( scope );
 
 			}
 
@@ -134,23 +176,5 @@ THREE.Robot = function() {
 
 	};
 
-	function creategGeometry( geometry, material, x, y, z, s ) {
-
-		console.log( "Body Geometry");
-		var mesh = new THREE.Mesh( geometry, material );
-		mesh.position.set( x, y, z );
-		mesh.rotation.set( 0 ,0 ,0 );
-		mesh.scale.set( s, s, s);
-		mesh.overdraw = true;
-		return mesh;
-
-	};
-
-	function finishLoading() {
-		
-		console.log( "finishLoading" );
-
-	};
-
-
 };
+THREE.Robot.prototype = new THREE.Entity();

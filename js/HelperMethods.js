@@ -32,3 +32,20 @@ function createGrid() {
 	return line;
 	
 }
+
+function rotationConvertion( type, delta ) {
+	var convertsion;
+
+	if (type == "d") {
+		// Takes in degree and return radian
+		convertsion = delta * ( Math.PI / 180 );
+	} else if (type = "r") {
+		// Takes in radiun and returns degree
+		convertsion = delta *  ( 180 / Math.PI ); 
+	} else {
+		console.log ( "rotationConvertion error" );
+	}
+
+	return convertsion;
+
+}
