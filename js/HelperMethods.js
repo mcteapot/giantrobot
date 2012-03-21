@@ -34,6 +34,7 @@ function createGrid() {
 }
 
 function angleConvertHelper( type, delta ) {
+	
 	var convertsion;
 
 	if (type == "d") {
@@ -48,4 +49,22 @@ function angleConvertHelper( type, delta ) {
 
 	return convertsion;
 
+}
+
+function debugCube( x, y, z, i, j, k, s ) {
+
+	var materials = [];
+	var cube;
+	
+	for ( var i = 0; i < 6; i ++ ) {
+
+		materials.push( new THREE.MeshBasicMaterial( { color: Math.random() * 0xffffff } ) );
+
+	}
+
+	cube = new THREE.Mesh( new THREE.CubeGeometry( s, s, s, x, y, z, materials ), new THREE.MeshFaceMaterial() );
+	//cube.rotation.set( angleConvertHelper( "d", i ), angleConvertHelper( "d", j ), angleConvertHelper( "d", k ) );
+	//cube.rotation.set( 0, 0, 0 );
+
+	return cube;
 }

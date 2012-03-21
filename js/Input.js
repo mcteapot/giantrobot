@@ -72,6 +72,8 @@ function onKeyDown( event ) {
 
 		case 65: /*a*/ controlsRobotHead.turnLeft = true; break;
 		case 68: /*d*/ controlsRobotHead.turnRight = true; break;
+		case 87: /*w*/ break;
+		case 83: /*s*/ break;
 		case 13: /*Enter*/ controlsRobotHead.fire = true; break;
 
 	}
@@ -83,6 +85,8 @@ function onKeyUp( event ) {
 
 		case 65: /*a*/ controlsRobotHead.turnLeft = false; break;
 		case 68: /*d*/ controlsRobotHead.turnRight = false; break;
+		case 87: /*w*/ break;
+		case 83: /*s*/ break;
 		case 13: /*Enter*/ controlsRobotHead.fire = false; break;
 
 	}

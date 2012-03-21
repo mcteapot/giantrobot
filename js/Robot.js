@@ -1,21 +1,12 @@
 // Gyant Robot by Arjun Prakash
 // Robot.js
 
-
 THREE.Robot = function() {
 	
 
 	// ##Object Properties
 
 	var scope = this;
-
-	// init variables
-
-	this.headRotationSpeedY = 2.5;
-	this.headRotationSpeedZ = 0.3;
-	this.headRotationStartZ = 10.0;
-	this.headRotationClampZ = 2;
-	this.maxHeadRotation = 30;
 
 	// robot rigging
 
@@ -27,12 +18,21 @@ THREE.Robot = function() {
 	this.headGeometry = null;
 	this.eyesGeometry = null;
 
-
-
-	// debug flags
-	this.debugHead = false;
+	this.eyeTarget = new THREE.Object3D();
 
 	// internal helper variables
+
+	this.headRotationSpeedY = 2.5;
+	this.headRotationSpeedZ = 0.3;
+	this.headRotationStartZ = 10.0;
+	this.headRotationClampZ = 2;
+	this.maxHeadRotation = 30;
+
+	// debug flags
+
+	this.debugHead = false;
+
+
 
 	// ##API
 
@@ -47,7 +47,13 @@ THREE.Robot = function() {
 	};
 
 	this.headRotation = function ( controls ) {
+
+		// keyp press right or "d"
+
 		if ( controls.turnRight ) {
+			
+			// head rotaion control
+
 			if ( angleConvert( "r", this.headMesh.rotation.y) < this.maxHeadRotation ) {
 				this.headMesh.rotation.y = ( this.headMesh.rotation.y + angleConvert( "d", this.headRotationSpeedY) );
 				if ( ( angleConvert( "r", this.headMesh.rotation.y ) > -this.headRotationClampZ ) &&  (angleConvert( "r", this.headMesh.rotation.y ) < this.headRotationClampZ ) ) {
@@ -57,10 +63,21 @@ THREE.Robot = function() {
 				} else if ( angleConvert( "r", this.headMesh.rotation.y) < 0 ) {
 					this.headMesh.rotation.z = ( this.headMesh.rotation.z - angleConvert( "d", this.headRotationSpeedZ ) );
 				} 
+
+				// body rotation control
+
+				if ( angleConvert( "r", this.bodyMesh.rotation.y ) > -10 ) {
+					this.bodyMesh.rotation.y = ( this.bodyMesh.rotation.y - angleConvert( "d", 0.5) );
+				}
 			}
 		}
 
+		// keyp press Left or "w"
+
 		if ( controls.turnLeft ) {
+
+			// head rotation control
+
 			if ( angleConvert( "r", this.headMesh.rotation.y) > -this.maxHeadRotation ) {
 				this.headMesh.rotation.y = ( this.headMesh.rotation.y - angleConvert( "d", this.headRotationSpeedY ) );
 				if ( ( angleConvert( "r", this.headMesh.rotation.y ) > -this.headRotationClampZ ) &&  ( angleConvert( "r", this.headMesh.rotation.y ) < this.headRotationClampZ) ) {
@@ -69,6 +86,12 @@ THREE.Robot = function() {
 					this.headMesh.rotation.z = ( this.headMesh.rotation.z - angleConvert( "d", this.headRotationSpeedZ ) );
 				} else if ( angleConvert( "r", this.headMesh.rotation.y) < 0 ) {
 					this.headMesh.rotation.z = ( this.headMesh.rotation.z + angleConvert( "d", this.headRotationSpeedZ ) );
+				}
+
+				// body rotation control
+
+				if ( angleConvert( "r", this.bodyMesh.rotation.y ) < 10 ) {
+					this.bodyMesh.rotation.y = ( this.bodyMesh.rotation.y + angleConvert( "d", 0.5) );
 				} 
 			}
 		}
@@ -78,6 +101,16 @@ THREE.Robot = function() {
 			console.log("headrotationZ " + angleConvert( "r", this.headMesh.rotation.z) );
 		}
 	};
+
+	this.getEyeTarget = function( object ) {
+
+		// sets postion of bullet form eye
+
+		this.eyeTarget.position.x = 15;
+		this.eyeTarget.position.y = 5;
+		this.eyeTarget.add( object );		
+
+	}
 
 
 	// ##Internal Helper Methods
@@ -126,39 +159,39 @@ THREE.Robot = function() {
 			// body
 
 			var bodyMaterial = new THREE.MeshPhongMaterial();
-			bodyMaterial.color = new THREE.Color().setRGB( 0.8549019607843137, 0.8666666666666667, 0.9215686274509803 );
-			bodyMaterial.ambient = new THREE.Color().setRGB( 0, 0.3333333333333333, 1 );
-			bodyMaterial.specular = new THREE.Color().setRGB( 0, 0.3333333333333333, 1);
+			bodyMaterial.color = new THREE.Color().setRGB( 0.85, 0.87, 0.92);
+			bodyMaterial.ambient = new THREE.Color().setRGB( 0, 0.33, 1 );
+			bodyMaterial.specular = new THREE.Color().setRGB( 0, 0.33, 1);
 
 			scope.bodyMesh = createGeometry( scope.bodyGeometry, bodyMaterial, 0, 0, 0, 0, 0, 0, scope.modelScale );
-			//scope.bodyMesh = createGeometry( scope.bodyGeometry, bodyMaterial, 0, 0, 0, scope.modelScale );
 
 			// head
 
 			var headMaterial = new THREE.MeshPhongMaterial();
-			headMaterial.color = new THREE.Color().setRGB( 0.9411764705882353,0.9490196078431372,0.9803921568627451 );
-			headMaterial.ambient = new THREE.Color().setRGB( 1, 0, 0.08235294117647059 );
-			headMaterial.specular = new THREE.Color().setRGB( 0, 0.25098039215686274, 1 );
+			headMaterial.color = new THREE.Color().setRGB( 0.94,0.95,0.98 );
+			headMaterial.ambient = new THREE.Color().setRGB( 1, 0, 0.08 );
+			headMaterial.specular = new THREE.Color().setRGB( 0, 0.25, 1 );
 
-			scope.headMesh = createGeometry( scope.headGeometry, headMaterial, 0, 77.01283547257887, 0, 0, 0, angleConvert( "d" , scope.headRotationStartZ ), scope.modelScale );
-			//scope.headMesh = createGeometry( scope.headGeometry, headMaterial, 0, 77.01283547257887, 0, scope.modelScale );
+			scope.headMesh = createGeometry( scope.headGeometry, headMaterial, 0, 76, 0, 0, 0, angleConvert( "d" , scope.headRotationStartZ ), scope.modelScale );
 
 
 			// eyes
 
 			var eyesMaterial = new THREE.MeshPhongMaterial();
-			eyesMaterial.color = new THREE.Color().setRGB( 0.9411764705882353, 0.9490196078431372, 0.9803921568627451 );
-			eyesMaterial.ambient = new THREE.Color().setRGB( 1, 0, 0.08235294117647059 );
-			eyesMaterial.specular = new THREE.Color().setRGB( 0, 0.25098039215686274, 1 );
-
+			eyesMaterial.color = new THREE.Color().setRGB( 0.94, 0.95, 0.98 );
+			eyesMaterial.ambient = new THREE.Color().setRGB( 1, 0, 0.08 );
+			eyesMaterial.specular = new THREE.Color().setRGB( 0, 0.25, 1 );
 
 			scope.eyesMesh = createGeometry( scope.eyesGeometry, eyesMaterial, 0, 0, 0, 0, 0, 0, scope.modelScale );
-			//scope.eyesMesh = createGeometry( scope.eyesGeometry, eyesMaterial, 0, 0, 0, scope.modelScale );
-
+		
+			// sets roots and rigs body
 
 			scope.root.add( scope.bodyMesh );
 			scope.headMesh.add( scope.eyesMesh );
+			scope.headMesh.add( scope.eyeTarget );
 			scope.root.add( scope.headMesh );
+
+			scope.root.rotation.z = angleConvert( "d", -10 );
 
 			// cache meshes
 
@@ -168,6 +201,7 @@ THREE.Robot = function() {
 
 			scope.loaded = true;
 
+			// scope.cappback function must be added via protoype due to closer load
 
 			if ( scope.callback ) {
 
@@ -184,6 +218,7 @@ THREE.Robot = function() {
 
 
 };
+// ##Inhearits form THREE.Entity()
 THREE.Robot.prototype = new THREE.Entity();
 
 

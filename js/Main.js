@@ -37,6 +37,11 @@ var controlsRobotHead = {
 	fire: false
 }
 
+// Debut objects
+
+var debugControl;
+
+var cube01;
 
 
 // Load 3d objects
@@ -60,14 +65,14 @@ function init() {
 	scene = new THREE.Scene();
 
 	// Camera
-	camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 5000 );
-	camera.position.set( 120.0,83.0,0.0 );
+	camera = new THREE.PerspectiveCamera( 53, window.innerWidth / window.innerHeight, 1, 5000 );
+	camera.position.set( 125.0,65.0,0.0 );
 
 	camera.rotation.set( 0.0, 1.5, 0.0 );
 	camera.aspect = SCREEN_WIDTH / SCREEN_HEIGHT;
 	camera.updateProjectionMatrix();
 
-	cameraTarget = new THREE.Vector3( 0.0, 30.0, 0.0  );
+	cameraTarget = new THREE.Vector3( 0.0, 105.0, 0.0  );
 	camera.lookAt( cameraTarget );
 
 	scene.add( camera );
@@ -102,7 +107,6 @@ function init() {
 
 	robotVernon.loadPartsJSON( "./assets/robotBody.js", "./assets/robotHead.js", "./assets/robotEyes.js" );
 
-	
 	
 	// Lights
 	
@@ -148,6 +152,14 @@ function init() {
 	//document.addEventListener( 'touchstart', onDocumentTouchStart, false );
 	//document.addEventListener( 'touchmove', onDocumentTouchMove, false );
 
+
+	// Debug
+
+	scene.add( cube01 = debugCube( 0, 0, 0, 0, 0, 0, 5 ) );
+	cube01.rotation.y = angleConvertHelper( "d", 45.0 );
+	cube01.rotation.z = angleConvertHelper( "d", 45.0 );
+	robotVernon.getEyeTarget( cube01 );
+
 } 
 
 
@@ -168,9 +180,12 @@ function render() {
 	// Set delta
 	delta = time.tick();
 
-	//console.log( "detal: " + delta );
-	//console.log( "head.y: " + robotVernon.headMesh.rotation.y );
+	// Game Code
 
+	robotVernon.headRotation( controlsRobotHead );
+
+
+	// Tests
 
 	//robotVernon.headMesh.rotation.y =+ (robotVernon.headMesh.rotation.y + delta);
 	//robotVernon.headMesh.rotation.y = (robotVernon.headMesh.rotation.y - delta);
@@ -180,7 +195,15 @@ function render() {
 	//camera.rotation.z =+ (targetRotation - camera.rotation.z) * 0.1;
 	//cameraPosition.y =+ (targetRotation - cameraPosition.y) * 0.5;
 
-	robotVernon.headRotation( controlsRobotHead );
+
+	// Debug
+
+	cube01.rotation.y = cube01.rotation.y + delta;
+
+	// Console Logs
+
+	//console.log( "detal: " + delta );
+	//console.log( "head.y: " + robotVernon.headMesh.rotation.y );
 
 	//console.log("targetRotation: " + targetRotation);
 	//console.log("headrotationY " + rotationConvertion( "r", robotVernon.headMesh.rotation.y) );
@@ -188,7 +211,13 @@ function render() {
 	//console.log("mouseX: " + mouseX);
 	//console.log("targetRotation: " + targetRotation);
 
+
+	// Render
+
 	renderer.render( scene, camera );
+
+
+
 
 } 
 

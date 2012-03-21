@@ -1,3 +1,6 @@
+// Gyant Robot by Arjun Prakash
+// Timer.js
+
 Timer = function() {
 
 	var scope = this;
