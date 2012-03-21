@@ -33,7 +33,7 @@ function createGrid() {
 	
 }
 
-function rotationConvertion( type, delta ) {
+function angleConvertHelper( type, delta ) {
 	var convertsion;
 
 	if (type == "d") {
@@ -43,7 +43,7 @@ function rotationConvertion( type, delta ) {
 		// Takes in radiun and returns degree
 		convertsion = delta *  ( 180 / Math.PI ); 
 	} else {
-		console.log ( "rotationConvertion error" );
+		console.log ( "angleConvertHelper error" );
 	}
 
 	return convertsion;

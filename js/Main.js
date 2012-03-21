@@ -180,7 +180,7 @@ function render() {
 	//camera.rotation.z =+ (targetRotation - camera.rotation.z) * 0.1;
 	//cameraPosition.y =+ (targetRotation - cameraPosition.y) * 0.5;
 
-	robotVernon.headRotation( controlsRobotHead.turnRight, controlsRobotHead.turnLeft );
+	robotVernon.headRotation( controlsRobotHead );
 
 	//console.log("targetRotation: " + targetRotation);
 	//console.log("headrotationY " + rotationConvertion( "r", robotVernon.headMesh.rotation.y) );
@@ -192,22 +192,7 @@ function render() {
 
 } 
 
-function rotationConvertion( type, delta ) {
-	var convertsion;
 
-	if (type == "d") {
-		// Takes in degree and return radian
-		convertsion = delta * ( Math.PI / 180 );
-	} else if (type = "r") {
-		// Takes in radiun and returns degree
-		convertsion = delta *  ( 180 / Math.PI ); 
-	} else {
-		console.log ( "rotationConvertion error" );
-	}
-
-	return convertsion;
-
-}
 
 
 

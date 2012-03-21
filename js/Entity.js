@@ -22,6 +22,9 @@ THREE.Entity = function() {
 	this.meshes = [];
 
 
+	// debug flags
+	this.debugChecks = false;
+
 	// ##Internal Helper Methods
 
 	createGeometry = function( geometry, material, x, y, z, i, j, k, s ) {
@@ -50,7 +53,7 @@ THREE.Entity = function() {
 
 	};
 
-	rotationConvertion = function( type, delta ) {
+	angleConvert = function( type, delta ) {
 		var convertsion;
 
 		if (type == "d") {
@@ -60,7 +63,7 @@ THREE.Entity = function() {
 			// Takes in radiun and returns degree
 			convertsion = delta *  ( 180 / Math.PI ); 
 		} else {
-			console.log ( "rotationConvertion error" );
+			console.log ( "angleConvert error" );
 		}
 
 		return convertsion;

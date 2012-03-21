@@ -1,10 +1,7 @@
-
-<<<<<<< HEAD
 // Gyant Robot by Arjun Prakash
 // Robot.js
 
-=======
->>>>>>> 91cfa83553e1cf374ead9c05c984503c8fdf0615
+
 THREE.Robot = function() {
 	
 
@@ -12,7 +9,7 @@ THREE.Robot = function() {
 
 	var scope = this;
 
-	// internal control variables
+	// init variables
 
 	this.headRotationSpeedY = 2.5;
 	this.headRotationSpeedZ = 0.3;
@@ -34,7 +31,7 @@ THREE.Robot = function() {
 
 	// debug flags
 	this.debugHead = false;
-	this.debugControlFlow = false;
+
 	// internal helper variables
 
 	// ##API
@@ -49,36 +46,36 @@ THREE.Robot = function() {
 
 	};
 
-	this.headRotation = function ( turnRight, turnLeft ) {
-		if ( turnRight ) {
-			if ( rotationConvertion( "r", this.headMesh.rotation.y) < this.maxHeadRotation ) {
-				this.headMesh.rotation.y = ( this.headMesh.rotation.y + rotationConvertion( "d", this.headRotationSpeedY) );
-				if ( ( rotationConvertion( "r", this.headMesh.rotation.y ) > -this.headRotationClampZ ) &&  (rotationConvertion( "r", this.headMesh.rotation.y ) < this.headRotationClampZ ) ) {
-					this.headMesh.rotation.z =  rotationConvertion( "d", this.headRotationStartZ );
-				} else if ( rotationConvertion( "r", this.headMesh.rotation.y) > 0 ) {
-					this.headMesh.rotation.z = ( this.headMesh.rotation.z + rotationConvertion( "d", this.headRotationSpeedZ ) );
-				} else if ( rotationConvertion( "r", this.headMesh.rotation.y) < 0 ) {
-					this.headMesh.rotation.z = ( this.headMesh.rotation.z - rotationConvertion( "d", this.headRotationSpeedZ ) );
+	this.headRotation = function ( controls ) {
+		if ( controls.turnRight ) {
+			if ( angleConvert( "r", this.headMesh.rotation.y) < this.maxHeadRotation ) {
+				this.headMesh.rotation.y = ( this.headMesh.rotation.y + angleConvert( "d", this.headRotationSpeedY) );
+				if ( ( angleConvert( "r", this.headMesh.rotation.y ) > -this.headRotationClampZ ) &&  (angleConvert( "r", this.headMesh.rotation.y ) < this.headRotationClampZ ) ) {
+					this.headMesh.rotation.z =  angleConvert( "d", this.headRotationStartZ );
+				} else if ( angleConvert( "r", this.headMesh.rotation.y) > 0 ) {
+					this.headMesh.rotation.z = ( this.headMesh.rotation.z + angleConvert( "d", this.headRotationSpeedZ ) );
+				} else if ( angleConvert( "r", this.headMesh.rotation.y) < 0 ) {
+					this.headMesh.rotation.z = ( this.headMesh.rotation.z - angleConvert( "d", this.headRotationSpeedZ ) );
 				} 
 			}
 		}
 
-		if ( turnLeft ) {
-			if ( rotationConvertion( "r", this.headMesh.rotation.y) > -this.maxHeadRotation ) {
-				this.headMesh.rotation.y = ( this.headMesh.rotation.y - rotationConvertion( "d", this.headRotationSpeedY ) );
-				if ( ( rotationConvertion( "r", this.headMesh.rotation.y ) > -this.headRotationClampZ ) &&  ( rotationConvertion( "r", this.headMesh.rotation.y ) < this.headRotationClampZ) ) {
-					this.headMesh.rotation.z =  rotationConvertion( "d", this.headRotationStartZ );
-				} else if ( rotationConvertion( "r", this.headMesh.rotation.y) > 0 ) {
-					this.headMesh.rotation.z = ( this.headMesh.rotation.z - rotationConvertion( "d", this.headRotationSpeedZ ) );
-				} else if ( rotationConvertion( "r", this.headMesh.rotation.y) < 0 ) {
-					this.headMesh.rotation.z = ( this.headMesh.rotation.z + rotationConvertion( "d", this.headRotationSpeedZ ) );
+		if ( controls.turnLeft ) {
+			if ( angleConvert( "r", this.headMesh.rotation.y) > -this.maxHeadRotation ) {
+				this.headMesh.rotation.y = ( this.headMesh.rotation.y - angleConvert( "d", this.headRotationSpeedY ) );
+				if ( ( angleConvert( "r", this.headMesh.rotation.y ) > -this.headRotationClampZ ) &&  ( angleConvert( "r", this.headMesh.rotation.y ) < this.headRotationClampZ) ) {
+					this.headMesh.rotation.z =  angleConvert( "d", this.headRotationStartZ );
+				} else if ( angleConvert( "r", this.headMesh.rotation.y) > 0 ) {
+					this.headMesh.rotation.z = ( this.headMesh.rotation.z - angleConvert( "d", this.headRotationSpeedZ ) );
+				} else if ( angleConvert( "r", this.headMesh.rotation.y) < 0 ) {
+					this.headMesh.rotation.z = ( this.headMesh.rotation.z + angleConvert( "d", this.headRotationSpeedZ ) );
 				} 
 			}
 		}
 
 		if ( this.debugHead ) {
-			console.log("headrotationY " + rotationConvertion( "r", this.headMesh.rotation.y) );
-			console.log("headrotationZ " + rotationConvertion( "r", this.headMesh.rotation.z) );
+			console.log("headrotationY " + angleConvert( "r", this.headMesh.rotation.y) );
+			console.log("headrotationZ " + angleConvert( "r", this.headMesh.rotation.z) );
 		}
 	};
 
@@ -86,7 +83,7 @@ THREE.Robot = function() {
 	// ##Internal Helper Methods
 	createBody = function( geometry ) {
 
-		if ( scope.debugControlFlow ) {
+		if ( scope.debugChecks ) {
 			console.log( "createBody" );
 		}
 		scope.bodyGeometry = geometry;
@@ -97,7 +94,7 @@ THREE.Robot = function() {
 
 	createHead = function( geometry ) {
 
-		if ( scope.debugControlFlow ) {
+		if ( scope.debugChecks ) {
 			console.log( "createHead" );
 		}
 		scope.headGeometry = geometry;
@@ -108,7 +105,7 @@ THREE.Robot = function() {
 
 	createEyes = function( geometry ) {
 
-		if ( scope.debugControlFlow ) {
+		if ( scope.debugChecks ) {
 			console.log( "createEyes" );
 		}
 		scope.eyesGeometry = geometry;
@@ -122,7 +119,7 @@ THREE.Robot = function() {
 
 		if ( scope.bodyGeometry && scope.headGeometry && scope.eyesGeometry ) {
 
-			if ( scope.debugControlFlow ) {
+			if ( scope.debugChecks ) {
 				console.log( "createRobot" );
 			}
 
@@ -133,11 +130,8 @@ THREE.Robot = function() {
 			bodyMaterial.ambient = new THREE.Color().setRGB( 0, 0.3333333333333333, 1 );
 			bodyMaterial.specular = new THREE.Color().setRGB( 0, 0.3333333333333333, 1);
 
-<<<<<<< HEAD
 			scope.bodyMesh = createGeometry( scope.bodyGeometry, bodyMaterial, 0, 0, 0, 0, 0, 0, scope.modelScale );
-=======
-			scope.bodyMesh = createGeometry( scope.bodyGeometry, bodyMaterial, 0, 0, 0, scope.modelScale );
->>>>>>> 91cfa83553e1cf374ead9c05c984503c8fdf0615
+			//scope.bodyMesh = createGeometry( scope.bodyGeometry, bodyMaterial, 0, 0, 0, scope.modelScale );
 
 			// head
 
@@ -146,11 +140,9 @@ THREE.Robot = function() {
 			headMaterial.ambient = new THREE.Color().setRGB( 1, 0, 0.08235294117647059 );
 			headMaterial.specular = new THREE.Color().setRGB( 0, 0.25098039215686274, 1 );
 
-<<<<<<< HEAD
-			scope.headMesh = createGeometry( scope.headGeometry, headMaterial, 0, 77.01283547257887, 0, 0, 0, rotationConvertion( "d" , scope.headRotationStartZ ), scope.modelScale );
-=======
-			scope.headMesh = createGeometry( scope.headGeometry, headMaterial, 0, 77.01283547257887, 0, scope.modelScale );
->>>>>>> 91cfa83553e1cf374ead9c05c984503c8fdf0615
+			scope.headMesh = createGeometry( scope.headGeometry, headMaterial, 0, 77.01283547257887, 0, 0, 0, angleConvert( "d" , scope.headRotationStartZ ), scope.modelScale );
+			//scope.headMesh = createGeometry( scope.headGeometry, headMaterial, 0, 77.01283547257887, 0, scope.modelScale );
+
 
 			// eyes
 
@@ -159,11 +151,10 @@ THREE.Robot = function() {
 			eyesMaterial.ambient = new THREE.Color().setRGB( 1, 0, 0.08235294117647059 );
 			eyesMaterial.specular = new THREE.Color().setRGB( 0, 0.25098039215686274, 1 );
 
-<<<<<<< HEAD
+
 			scope.eyesMesh = createGeometry( scope.eyesGeometry, eyesMaterial, 0, 0, 0, 0, 0, 0, scope.modelScale );
-=======
-			scope.eyesMesh = createGeometry( scope.eyesGeometry, eyesMaterial, 0, 0, 0, scope.modelScale );
->>>>>>> 91cfa83553e1cf374ead9c05c984503c8fdf0615
+			//scope.eyesMesh = createGeometry( scope.eyesGeometry, eyesMaterial, 0, 0, 0, scope.modelScale );
+
 
 			scope.root.add( scope.bodyMesh );
 			scope.headMesh.add( scope.eyesMesh );
@@ -191,28 +182,8 @@ THREE.Robot = function() {
 
 	};
 
-<<<<<<< HEAD
+
 };
 THREE.Robot.prototype = new THREE.Entity();
-=======
-	function createGeometry( geometry, material, x, y, z, s ) {
-
-		console.log( "Body Geometry");
-		var mesh = new THREE.Mesh( geometry, material );
-		mesh.position.set( x, y, z );
-		mesh.rotation.set( 0 ,0 ,0 );
-		mesh.scale.set( s, s, s);
-		mesh.overdraw = true;
-		return mesh;
-
-	};
-
-	function finishLoading() {
-		
-		console.log( "finishLoading" );
-
-	};
 
 
-};
->>>>>>> 91cfa83553e1cf374ead9c05c984503c8fdf0615
