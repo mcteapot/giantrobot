@@ -5,26 +5,38 @@ THREE.Entity = function() {
 
 	// ##Object Properties
 
-	var scope = this;
+	/*	NOTE:
+		- Inharated objects should own its own properties.
+		- foo = function() is only for inharatance methods
+		- function foo () is only for internial method scope object
+	*/
 
-	// manual parameters
+	// ##API
+	
+	this.enableShadows = function ( enable ) {
 
-	this.modelScale = 1;
+		if ( this.meshes ) {
+			for ( var i = 0; i < this.meshes.length; i ++ ) {
 
+				this.meshes[ i ].castShadow = enable;
+				//this.meshes[ i ].receiveShadow = enable;
 
-	// root objet
+			}
+		}
 
-	this.root = new THREE.Object3D();
+	};
 
-	// internal helper variables
+	this.setVisible = function ( enable ) {
 
-	this.loaded = false;
-	this.meshes = [];
+		if ( this.meshes ) {
+			for ( var i = 0; i < this.meshes.length; i ++ ) {
 
+				this.meshes[ i ].visible = enable;
 
-	// debug flags
+			}
+		}
 
-	this.debugInfo = false;
+	};
 
 	// ##Internal Helper Methods
 
@@ -42,16 +54,6 @@ THREE.Entity = function() {
 		mesh.scale.set( s, s, s);
 		mesh.overdraw = true;
 		return mesh;
-
-	};
-
-	finishLoading = function(o) {
-
-		if ( this.debugInfo ) {
-		
-			console.info( "finishLoading: " + o);
-		
-		}
 
 	};
 

@@ -25,6 +25,7 @@ var windowHalfX = window.innerWidth / 2;
 var windowHalfY = window.innerHeight / 2;
 
 var robotVernon;
+var buildingLeft, buildingRight;
 
 var mouseX = 0;
 var mouseY = 0;
@@ -42,10 +43,6 @@ var controlsRobotHead = {
 var debugControl;
 
 var cube01;
-
-
-// Load 3d objects
-var loader = new THREE.JSONLoader();
 
 
 
@@ -66,13 +63,13 @@ function init() {
 
 	// Camera
 	camera = new THREE.PerspectiveCamera( 53, window.innerWidth / window.innerHeight, 1, 5000 );
-	camera.position.set( 125.0,65.0,0.0 );
+	camera.position.set( 155.0,65.0,0.0 );
 
 	camera.rotation.set( 0.0, 1.5, 0.0 );
 	camera.aspect = SCREEN_WIDTH / SCREEN_HEIGHT;
 	camera.updateProjectionMatrix();
 
-	cameraTarget = new THREE.Vector3( 0.0, 105.0, 0.0  );
+	cameraTarget = new THREE.Vector3( 0.0, 120.0, 0.0  );
 	camera.lookAt( cameraTarget );
 
 	scene.add( camera );
@@ -98,37 +95,70 @@ function init() {
 	// Creat Robot
 
 	robotVernon = new THREE.Robot();
-
+	
 	robotVernon.callback =  function( object ) {
 
-		addRobot(object, 0, 0, 0, 1);
+		addRobot( object, 0, 0, 0, 1 );
 
 	};
 
 	robotVernon.loadPartsJSON( "./assets/robotBody.js", "./assets/robotHead.js", "./assets/robotEyes.js" );
 
-	
+
+	// Create Buildings
+
+
+	buildingLeft = new THREE.Building();
+
+	buildingLeft.callback = function( object ) {
+
+		addBuilding( object, -60, 0, 85, 10, 214, 0, 1 );
+
+	};
+
+	buildingLeft.loadPartsJSON( "./assets/building.js", "./assets/buildingtop.js" );
+
+
+	buildingRight = new THREE.Building();
+
+	buildingRight.callback = function( object ) {
+
+		addBuilding( object, -60, -13, -85, 0, 214, 10, 1 );
+
+	};
+
+	buildingRight.loadPartsJSON( "./assets/building.js", "./assets/buildingspire.js" );
+
+	//buildingLeft.setFrillPosition( 0, 234, 0 );
+
 	// Lights
 	
 	//scene.add( new THREE.AmbientLight( 0xcccccc ) );
 
+	// front left
 	var pointLight01 = new THREE.PointLight();
-	pointLight01.intensity = 1;
+	pointLight01.intensity = 1.0;
 	pointLight01.castShadow = false;
-	pointLight01.color = new THREE.Color().setRGB( 0.8666666666666667, 0.8823529411764706, 0.9019607843137255 );
-	pointLight01.position.set( 100, 117.32788798133033, 42.00700116686119 );
-	pointLight01.rotation.set(0,0,0);
-	pointLight01.scale.set( 1, 1, 1 );
+	pointLight01.color = new THREE.Color().setRGB( 0.77, 0.78, 0.90 );
+	pointLight01.position.set( 100, 117.33, 42.00);
 	scene.add( pointLight01 );
 
+	// back center
 	var pointLight02 = new THREE.PointLight();
-	pointLight02.intensity = 1;
+	pointLight02.intensity = 1.2;
 	pointLight02.castShadow = false;
-	pointLight02.color = new THREE.Color().setRGB( 0.8588235294117647, 0.2549019607843137, 0.10588235294117647 );
-	pointLight02.position.set( -228.0423280423279, 0.641773628938215, 0 );
-	pointLight02.rotation.set( 0, 0, 0 );
-	pointLight02.scale.set( 1, 1, 1 );
+	pointLight02.color = new THREE.Color().setRGB( 0.86, 0.15, 0.11 );
+	pointLight02.position.set( -100.04, 95.0, 0 );
 	scene.add( pointLight02 );
+
+	// front right
+	var pointLight03 = new THREE.PointLight();
+	pointLight03.intensity = 0.6;
+	pointLight03.castShadow = false;
+	pointLight03.color = new THREE.Color().setRGB( 0.61, 0.71, 0.99 );
+	pointLight03.position.set( 100, 32.50, -187.50 );
+	scene.add( pointLight03 );
+
 
 	// WindowResize resizes screan according to screen
 	THREEx.WindowResize( renderer, camera );
@@ -184,15 +214,7 @@ function render() {
 
 	robotVernon.headRotation( controlsRobotHead );
 
-
 	// Tests
-
-	//robotVernon.headMesh.rotation.y =+ (robotVernon.headMesh.rotation.y + delta);
-	//robotVernon.headMesh.rotation.y = (robotVernon.headMesh.rotation.y - delta);
-	//head.rotation.x =+ (targetRotation - head.rotation.x) * 0.08;
-	//head.rotation.y =+ (targetRotation - head.rotation.y) * 0.1;
-	//head.rotation.z =+ (targetRotation - head.rotation.z) * 0.05;
-	//camera.rotation.z =+ (targetRotation - camera.rotation.z) * 0.1;
 	//cameraPosition.y =+ (targetRotation - cameraPosition.y) * 0.5;
 
 
@@ -203,20 +225,10 @@ function render() {
 	// Console Logs
 
 	//console.log( "detal: " + delta );
-	//console.log( "head.y: " + robotVernon.headMesh.rotation.y );
-
-	//console.log("targetRotation: " + targetRotation);
-	//console.log("headrotationY " + rotationConvertion( "r", robotVernon.headMesh.rotation.y) );
-	//console.log("headrotationZ " + rotationConvertion( "r", robotVernon.headMesh.rotation.z) );
-	//console.log("mouseX: " + mouseX);
-	//console.log("targetRotation: " + targetRotation);
-
 
 	// Render
 
 	renderer.render( scene, camera );
-
-
 
 
 } 

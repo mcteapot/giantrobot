@@ -8,6 +8,8 @@ THREE.Robot = function() {
 
 	var scope = this;
 
+	this.modelScale = 1;
+
 	// robot rigging
 
 	this.bodyMesh = null;
@@ -18,10 +20,13 @@ THREE.Robot = function() {
 	this.headGeometry = null;
 	this.eyesGeometry = null;
 
+	this.root = new THREE.Object3D();
 	this.eyeTarget = new THREE.Object3D();
 
-	// internal helper variables
+	this.loaded = false;
+	this.meshes = [];
 
+	// internal helper variables
 	
 	this.headRotationSpeedY = 2.5;
 	this.headRotationSpeedZ = 0.3;
@@ -33,15 +38,17 @@ THREE.Robot = function() {
 	this.bodyRotationSpeedZ = 0.15;
 	this.maxBodyRotationY = 10;
 	this.bodyRotationStartZ = -10;
+
 	// debug flags
 
-	this.debugHead = true;
+	this.debugInfo = false;
+	this.debugHead = false;
 
 
 
 	// ##API
 
-	this.loadPartsJSON = function ( bodyURL, headURL, eyesURL ) { 
+	this.loadPartsJSON = function( bodyURL, headURL, eyesURL ) { 
 
 		var loader = new THREE.JSONLoader();
 
@@ -51,7 +58,7 @@ THREE.Robot = function() {
 
 	};
 
-	this.headRotation = function ( controls ) {
+	this.headRotation = function( controls ) {
 
 		// keyp press right or "d"
 
@@ -106,7 +113,7 @@ THREE.Robot = function() {
 			
 					this.headMesh.rotation.z =  angleConvert( "d", this.headRotationStartZ );
 					this.bodyMesh.rotation.z = angleConvert( "d", this.bodyRotationStartZ );
-					
+
 				} else if ( angleConvert( "r", this.headMesh.rotation.y) > 0 ) {
 			
 					this.headMesh.rotation.z = ( this.headMesh.rotation.z - angleConvert( "d", this.headRotationSpeedZ ) );
@@ -134,9 +141,9 @@ THREE.Robot = function() {
 		if ( this.debugHead ) {
 		
 			console.group( "Robot Info" );
-				console.log( "headrotationY " + angleConvert( "r", this.headMesh.rotation.y ) );
-				//console.log( "headrotationZ " + angleConvert( "r", this.headMesh.rotation.z ) );
-				console.log( "bodyrotationZ " + angleConvert( "r", this.bodyMesh.rotation.z ) );
+				console.log( "headrotationY: " + angleConvert( "r", this.headMesh.rotation.y ) );
+				console.log( "headrotationZ: " + angleConvert( "r", this.headMesh.rotation.z ) );
+				console.log( "bodyrotationZ: " + angleConvert( "r", this.bodyMesh.rotation.z ) );
 			console.groupEnd(); // end group
 		
 		}
@@ -155,7 +162,8 @@ THREE.Robot = function() {
 
 
 	// ##Internal Helper Methods
-	createBody = function( geometry ) {
+
+	function createBody( geometry ) {
 
 		if ( scope.debugInfo ) {
 	
@@ -169,7 +177,7 @@ THREE.Robot = function() {
 
 	};
 
-	createHead = function( geometry ) {
+	function createHead( geometry ) {
 
 		if ( scope.debugInfo ) {
 	
@@ -183,7 +191,7 @@ THREE.Robot = function() {
 
 	};
 
-	createEyes = function( geometry ) {
+	function createEyes( geometry ) {
 
 		if ( scope.debugInfo ) {
 	
@@ -198,7 +206,7 @@ THREE.Robot = function() {
 	};
 
 
-	createRobot = function() {
+	function createRobot() {
 
 		if ( scope.bodyGeometry && scope.headGeometry && scope.eyesGeometry ) {
 
@@ -259,8 +267,6 @@ THREE.Robot = function() {
 			if ( scope.callback ) {
 
 				scope.callback( scope );
-
-				finishLoading( scope );
 
 			}
 

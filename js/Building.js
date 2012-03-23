@@ -8,36 +8,45 @@ THREE.Building = function() {
 
 	var scope = this;
 
+	this.modelScale = 1;
+
 	// building rigging
 
 	this.bodyMesh = null;
-	this.frilllMesh = null;
+	this.frillMesh = null;
 
 	this.bodyGeometry = null;
-	this.frilllGeometry = null;
+	this.frillGeometry = null;
+
+	this.root = new THREE.Object3D();
+
+	this.loaded = false;
+	this.meshes = [];
 
 	// internal helper variables
 
-	this.frilllPositionX = 0;
+	this.frillPositionX = 0;
 
 	// debug flags
-
+	
+	this.debugInfo = false;
 
 	// ##API
-	this.loadPartsJSON = function ( buildingURL, buildingFrilllURL ) { 
+
+	this.loadPartsJSON = function( buildingURL, buildingFrillURL ) { 
 
 		var loader = new THREE.JSONLoader();
 
-		loader.load( bodyURL, function( geometry ) { createBody( geometry ) } );
-		loader.load( headURL, function( geometry ) { createFrill( geometry ) } );
+		loader.load( buildingURL, function( geometry ) { createBody( geometry ) } );
+		loader.load( buildingFrillURL, function( geometry ) { createFrill( geometry ) } );
 
 	};
 
-	this.setFrillPosition = function ( x, y, z ) {
+	this.setFrillPosition = function( x, y, z ) {
 
-		if ( this.frilllMesh ) {
+		if ( this.loaded ) {
 
-			this.frilllMesh.position.set( x, y, z );
+			this.frillMesh.position.set( x, y, z );
 
 		} else {
 
@@ -47,9 +56,9 @@ THREE.Building = function() {
 
 	}
 
-	this.setRootPosition = function ( x, y, z ) {
+	this.setRootPosition = function( x, y, z ) {
 
-		if ( this.root ) {
+		if ( this.loaded ) {
 
 			this.root.position.set( x, y, z );
 
@@ -63,8 +72,8 @@ THREE.Building = function() {
 
 
 	// ##Internal Helper Methods
-	
-	createBody = function( geometry ) {
+
+	function createBody( geometry ) {
 
 		if ( scope.debugInfo ) {
 
@@ -78,7 +87,7 @@ THREE.Building = function() {
 
 	};
 
-	createFrill = function( geometry ) {
+	function createFrill( geometry ) {
 
 		if ( scope.debugInfo ) {
 		
@@ -86,15 +95,15 @@ THREE.Building = function() {
 		
 		}
 		
-		scope.frilllGeometry = geometry;
+		scope.frillGeometry = geometry;
 
 		createBuilding();
 
 	};
 
-	createBuilding = function() {
+	function createBuilding() {
 
-		if ( scope.bodyGeometry && scope.frilllGeometry ) {
+		if ( scope.bodyGeometry && scope.frillGeometry ) {
 		
 			if ( scope.debugInfo ) {
 		
@@ -106,7 +115,7 @@ THREE.Building = function() {
 
 			var bodyMaterial = new THREE.MeshPhongMaterial();
 			bodyMaterial.color = new THREE.Color().setRGB( 0.83, 0.80, 0.78 );
-			bodyMaterial.ambient = new THREE.Color().setRGB( 0, 0.13, 0.66 );
+			bodyMaterial.ambient = new THREE.Color().setRGB( 0, 0.13, 0.26 );
 			bodyMaterial.specular = new THREE.Color().setRGB( 0.44, 0.41, 0.42 );
 
 			scope.bodyMesh = createGeometry( scope.bodyGeometry, bodyMaterial, 0, 0, 0, 0, 0, 0, scope.modelScale );
@@ -114,20 +123,20 @@ THREE.Building = function() {
 			// frill
 
 			var frillMaterial = new THREE.MeshPhongMaterial();
-			frillMaterial.color = new THREE.Color().setRGB( 0.83, 0.80, 0.78 );
-			frillMaterial.ambient = new THREE.Color().setRGB( 0, 0.13, 0.66 );
+			frillMaterial.color = new THREE.Color().setRGB( 0.73, 0.70, 0.68 );
+			frillMaterial.ambient = new THREE.Color().setRGB( 0, 0.13, 0.26 );
 			frillMaterial.specular = new THREE.Color().setRGB( 0.44, 0.41, 0.42 );
 
-			scope.frilllMesh = createGeometry( scope.frilllGeometry, frillMaterial, 0, 0, 0, 0, 0, 0, scope.modelScale );
+			scope.frillMesh = createGeometry( scope.frillGeometry, frillMaterial, 0, 0, 0, 0, 0, 0, scope.modelScale );
 
 			// sets roots and rigs body
 
 			scope.root.add( scope.bodyMesh );
-			scope.bodyMesh.add( scope.frilllMesh );
+			scope.bodyMesh.add( scope.frillMesh );
 
 			// cache meshes
 
-			scope.meshes = [ scope.bodyMesh, scope.frilllMesh ];
+			scope.meshes = [ scope.bodyMesh, scope.frillMesh ];
 
 			scope.loaded = true;
 
@@ -136,8 +145,6 @@ THREE.Building = function() {
 			if ( scope.callback ) {
 
 				scope.callback( scope );
-
-				finishLoading( scope );
 
 			}
 		

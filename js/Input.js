@@ -68,7 +68,7 @@ function onDocumentTouchMove( event ) {
 
 
 function onKeyDown( event ) {
-	switch( event.keyCode ) {
+	switch ( event.keyCode ) {
 
 		case 65: /*a*/ controlsRobotHead.turnLeft = true; break;
 		case 68: /*d*/ controlsRobotHead.turnRight = true; break;
@@ -81,7 +81,7 @@ function onKeyDown( event ) {
 }
 
 function onKeyUp( event ) {
-	switch( event.keyCode ) {
+	switch ( event.keyCode ) {
 
 		case 65: /*a*/ controlsRobotHead.turnLeft = false; break;
 		case 68: /*d*/ controlsRobotHead.turnRight = false; break;

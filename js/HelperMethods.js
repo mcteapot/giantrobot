@@ -9,7 +9,19 @@ function addRobot( object, x, y, z, s ) {
 	object.root.position.set( x, y, z );
 	scene.add( object.root );
 
+	//object.enableShadows( true );
+
 }
+
+function addBuilding( object, x, y, z, a, b, c, s ) {
+
+	object.root.position.set( x, y, z );
+	scene.add( object.root );
+
+	object.setFrillPosition( a, b, c );
+
+}
+
 
 function createGrid() {
 
