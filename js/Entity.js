@@ -23,15 +23,17 @@ THREE.Entity = function() {
 
 
 	// debug flags
-	
-	this.debugChecks = false;
+
+	this.debugInfo = false;
 
 	// ##Internal Helper Methods
 
 	createGeometry = function( geometry, material, x, y, z, i, j, k, s ) {
 		
-		if ( this.debugChecks ) {
-			console.log( "Body Geometry");
+		if ( this.debugInfo ) {
+		
+			console.info( "Body Geometry");
+		
 		}
 
 		var mesh = new THREE.Mesh( geometry, material );
@@ -45,8 +47,10 @@ THREE.Entity = function() {
 
 	finishLoading = function(o) {
 
-		if ( this.debugChecks ) {
-			console.log( "finishLoading: " + o);
+		if ( this.debugInfo ) {
+		
+			console.info( "finishLoading: " + o);
+		
 		}
 
 	};
@@ -59,13 +63,19 @@ THREE.Entity = function() {
 		var convertsion;
 
 		if (type == "d") {
+		
 			// takes in degree and return radian
 			convertsion = delta * ( Math.PI / 180 );
+		
 		} else if (type = "r") {
+		
 			// takes in radiun and returns degree
 			convertsion = delta *  ( 180 / Math.PI ); 
+		
 		} else {
-			console.log ( "angleConvert error" );
+		
+			console.error ( "angleConvert error" );
+		
 		}
 
 		return convertsion;

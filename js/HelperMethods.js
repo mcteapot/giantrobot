@@ -38,13 +38,19 @@ function angleConvertHelper( type, delta ) {
 	var convertsion;
 
 	if (type == "d") {
+	
 		// Takes in degree and return radian
 		convertsion = delta * ( Math.PI / 180 );
+	
 	} else if (type = "r") {
+	
 		// Takes in radiun and returns degree
 		convertsion = delta *  ( 180 / Math.PI ); 
+	
 	} else {
+	
 		console.log ( "angleConvertHelper error" );
+	
 	}
 
 	return convertsion;
@@ -55,7 +61,7 @@ function debugCube( x, y, z, i, j, k, s ) {
 
 	var materials = [];
 	var cube;
-	
+
 	for ( var i = 0; i < 6; i ++ ) {
 
 		materials.push( new THREE.MeshBasicMaterial( { color: Math.random() * 0xffffff } ) );

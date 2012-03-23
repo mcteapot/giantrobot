@@ -22,15 +22,20 @@ THREE.Robot = function() {
 
 	// internal helper variables
 
+	
 	this.headRotationSpeedY = 2.5;
 	this.headRotationSpeedZ = 0.3;
 	this.headRotationStartZ = 10.0;
 	this.headRotationClampZ = 2;
-	this.maxHeadRotation = 30;
+	this.maxHeadRotationY = 30;
 
+	this.bodyRotationSpeedY = 0.5;
+	this.bodyRotationSpeedZ = 0.15;
+	this.maxBodyRotationY = 10;
+	this.bodyRotationStartZ = -10;
 	// debug flags
 
-	this.debugHead = false;
+	this.debugHead = true;
 
 
 
@@ -50,56 +55,92 @@ THREE.Robot = function() {
 
 		// keyp press right or "d"
 
-		if ( controls.turnRight ) {
+		if ( controls.turnRight && this.loaded ) {
 			
 			// head rotaion control
 
-			if ( angleConvert( "r", this.headMesh.rotation.y) < this.maxHeadRotation ) {
+			if ( angleConvert( "r", this.headMesh.rotation.y ) < this.maxHeadRotationY ) {
+			
 				this.headMesh.rotation.y = ( this.headMesh.rotation.y + angleConvert( "d", this.headRotationSpeedY) );
+				
 				if ( ( angleConvert( "r", this.headMesh.rotation.y ) > -this.headRotationClampZ ) &&  (angleConvert( "r", this.headMesh.rotation.y ) < this.headRotationClampZ ) ) {
+			
 					this.headMesh.rotation.z =  angleConvert( "d", this.headRotationStartZ );
+					this.bodyMesh.rotation.z = angleConvert( "d", this.bodyRotationStartZ );
+
 				} else if ( angleConvert( "r", this.headMesh.rotation.y) > 0 ) {
+			
 					this.headMesh.rotation.z = ( this.headMesh.rotation.z + angleConvert( "d", this.headRotationSpeedZ ) );
+					this.bodyMesh.rotation.z = ( this.bodyMesh.rotation.z + angleConvert( "d", this.bodyRotationSpeedZ ) );
+				
 				} else if ( angleConvert( "r", this.headMesh.rotation.y) < 0 ) {
+			
 					this.headMesh.rotation.z = ( this.headMesh.rotation.z - angleConvert( "d", this.headRotationSpeedZ ) );
+					this.bodyMesh.rotation.z = ( this.bodyMesh.rotation.z - angleConvert( "d", this.bodyRotationSpeedZ ) );
+				
 				} 
 
 				// body rotation control
 
-				if ( angleConvert( "r", this.bodyMesh.rotation.y ) > -10 ) {
-					this.bodyMesh.rotation.y = ( this.bodyMesh.rotation.y - angleConvert( "d", 0.5) );
+				if ( angleConvert( "r", this.bodyMesh.rotation.y ) > -this.maxBodyRotationY ) {
+			
+					this.bodyMesh.rotation.y = ( this.bodyMesh.rotation.y - angleConvert( "d", this.bodyRotationSpeedY ) );
+			
 				}
+			
 			}
+		
 		}
 
 		// keyp press Left or "w"
 
-		if ( controls.turnLeft ) {
+		if ( controls.turnLeft && this.loaded ) {
 
 			// head rotation control
 
-			if ( angleConvert( "r", this.headMesh.rotation.y) > -this.maxHeadRotation ) {
+			if ( angleConvert( "r", this.headMesh.rotation.y ) > -this.maxHeadRotationY ) {
+			
 				this.headMesh.rotation.y = ( this.headMesh.rotation.y - angleConvert( "d", this.headRotationSpeedY ) );
+				
 				if ( ( angleConvert( "r", this.headMesh.rotation.y ) > -this.headRotationClampZ ) &&  ( angleConvert( "r", this.headMesh.rotation.y ) < this.headRotationClampZ) ) {
+			
 					this.headMesh.rotation.z =  angleConvert( "d", this.headRotationStartZ );
+					this.bodyMesh.rotation.z = angleConvert( "d", this.bodyRotationStartZ );
+					
 				} else if ( angleConvert( "r", this.headMesh.rotation.y) > 0 ) {
+			
 					this.headMesh.rotation.z = ( this.headMesh.rotation.z - angleConvert( "d", this.headRotationSpeedZ ) );
+					this.bodyMesh.rotation.z = ( this.bodyMesh.rotation.z - angleConvert( "d", this.bodyRotationSpeedZ ) );
+				
 				} else if ( angleConvert( "r", this.headMesh.rotation.y) < 0 ) {
+			
 					this.headMesh.rotation.z = ( this.headMesh.rotation.z + angleConvert( "d", this.headRotationSpeedZ ) );
+					this.bodyMesh.rotation.z = ( this.bodyMesh.rotation.z + angleConvert( "d", this.bodyRotationSpeedZ ) );
+				
 				}
 
 				// body rotation control
 
-				if ( angleConvert( "r", this.bodyMesh.rotation.y ) < 10 ) {
-					this.bodyMesh.rotation.y = ( this.bodyMesh.rotation.y + angleConvert( "d", 0.5) );
+				if ( angleConvert( "r", this.bodyMesh.rotation.y ) < this.maxBodyRotationY ) {
+			
+					this.bodyMesh.rotation.y = ( this.bodyMesh.rotation.y + angleConvert( "d", this.bodyRotationSpeedY ) );
+			
 				} 
+			
 			}
+		
 		}
 
 		if ( this.debugHead ) {
-			console.log("headrotationY " + angleConvert( "r", this.headMesh.rotation.y) );
-			console.log("headrotationZ " + angleConvert( "r", this.headMesh.rotation.z) );
+		
+			console.group( "Robot Info" );
+				console.log( "headrotationY " + angleConvert( "r", this.headMesh.rotation.y ) );
+				//console.log( "headrotationZ " + angleConvert( "r", this.headMesh.rotation.z ) );
+				console.log( "bodyrotationZ " + angleConvert( "r", this.bodyMesh.rotation.z ) );
+			console.groupEnd(); // end group
+		
 		}
+	
 	};
 
 	this.getEyeTarget = function( object ) {
@@ -116,9 +157,12 @@ THREE.Robot = function() {
 	// ##Internal Helper Methods
 	createBody = function( geometry ) {
 
-		if ( scope.debugChecks ) {
-			console.log( "createBody" );
+		if ( scope.debugInfo ) {
+	
+			console.info( "createBody" );
+	
 		}
+	
 		scope.bodyGeometry = geometry;
 
 		createRobot();
@@ -127,9 +171,12 @@ THREE.Robot = function() {
 
 	createHead = function( geometry ) {
 
-		if ( scope.debugChecks ) {
-			console.log( "createHead" );
+		if ( scope.debugInfo ) {
+	
+			console.info( "createHead" );
+	
 		}
+	
 		scope.headGeometry = geometry;
 
 		createRobot();
@@ -138,9 +185,12 @@ THREE.Robot = function() {
 
 	createEyes = function( geometry ) {
 
-		if ( scope.debugChecks ) {
-			console.log( "createEyes" );
+		if ( scope.debugInfo ) {
+	
+			console.info( "createEyes" );
+	
 		}
+	
 		scope.eyesGeometry = geometry;
 
 		createRobot();
@@ -152,8 +202,10 @@ THREE.Robot = function() {
 
 		if ( scope.bodyGeometry && scope.headGeometry && scope.eyesGeometry ) {
 
-			if ( scope.debugChecks ) {
+			if ( scope.debugInfo ) {
+		
 				console.log( "createRobot" );
+		
 			}
 
 			// body
@@ -187,11 +239,12 @@ THREE.Robot = function() {
 			// sets roots and rigs body
 
 			scope.root.add( scope.bodyMesh );
+			scope.bodyMesh.add( scope.headMesh );
 			scope.headMesh.add( scope.eyesMesh );
 			scope.headMesh.add( scope.eyeTarget );
-			scope.root.add( scope.headMesh );
+			
 
-			scope.root.rotation.z = angleConvert( "d", -10 );
+			scope.bodyMesh.rotation.z = angleConvert( "d", scope.bodyRotationStartZ );
 
 			// cache meshes
 
