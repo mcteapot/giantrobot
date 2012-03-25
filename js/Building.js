@@ -1,7 +1,7 @@
 // Gyant Robot by Arjun Prakash
 // Building.js
 
-THREE.Building = function() {
+THREE.Building = function( side ) {
 
 
 	// ##Object Properties
@@ -25,7 +25,7 @@ THREE.Building = function() {
 
 	// internal helper variables
 
-	this.frillPositionX = 0;
+	this.side = side;
 
 	// debug flags
 	
@@ -114,16 +114,16 @@ THREE.Building = function() {
 			// body
 
 			var bodyMaterial = new THREE.MeshPhongMaterial();
-			bodyMaterial.color = new THREE.Color().setRGB( 0.83, 0.80, 0.78 );
+			bodyMaterial.color = new THREE.Color().setRGB( 0.43, 0.40, 0.38 );
 			bodyMaterial.ambient = new THREE.Color().setRGB( 0, 0.13, 0.26 );
-			bodyMaterial.specular = new THREE.Color().setRGB( 0.44, 0.41, 0.42 );
+			bodyMaterial.specular = new THREE.Color().setRGB( 0.24, 0.21, 0.22 );
 
 			scope.bodyMesh = createGeometry( scope.bodyGeometry, bodyMaterial, 0, 0, 0, 0, 0, 0, scope.modelScale );
 
 			// frill
 
 			var frillMaterial = new THREE.MeshPhongMaterial();
-			frillMaterial.color = new THREE.Color().setRGB( 0.73, 0.70, 0.68 );
+			frillMaterial.color = new THREE.Color().setRGB( 0.33, 0.30, 0.28 );
 			frillMaterial.ambient = new THREE.Color().setRGB( 0, 0.13, 0.26 );
 			frillMaterial.specular = new THREE.Color().setRGB( 0.44, 0.41, 0.42 );
 

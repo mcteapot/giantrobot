@@ -64,12 +64,12 @@ THREE.Entity = function() {
 
 		var convertsion;
 
-		if (type == "d") {
+		if (type === "d") {
 		
 			// takes in degree and return radian
 			convertsion = delta * ( Math.PI / 180 );
 		
-		} else if (type = "r") {
+		} else if (type === "r") {
 		
 			// takes in radiun and returns degree
 			convertsion = delta *  ( 180 / Math.PI ); 

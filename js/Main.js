@@ -26,6 +26,8 @@ var windowHalfY = window.innerHeight / 2;
 
 var robotVernon;
 var buildingLeft, buildingRight;
+var eyeTarget;
+var bullet01;
 
 var mouseX = 0;
 var mouseY = 0;
@@ -104,11 +106,28 @@ function init() {
 
 	robotVernon.loadPartsJSON( "./assets/robotBody.js", "./assets/robotHead.js", "./assets/robotEyes.js" );
 
+	// Creat Bullets
+
+	eyeTarget = new THREE.Object3D();
+	robotVernon.addChildToEyeTarget( eyeTarget );
+
+	bullet01 = new THREE.Bullet( eyeTarget );
+
+	bullet01.callback = function( object ) {
+
+		addBullet( bullet01 );
+
+	};
+
+	bullet01.loadBullet( 1, 10, 2 );
+
+
+
+
 
 	// Create Buildings
 
-
-	buildingLeft = new THREE.Building();
+	buildingLeft = new THREE.Building( "left" );
 
 	buildingLeft.callback = function( object ) {
 
@@ -119,7 +138,7 @@ function init() {
 	buildingLeft.loadPartsJSON( "./assets/building.js", "./assets/buildingtop.js" );
 
 
-	buildingRight = new THREE.Building();
+	buildingRight = new THREE.Building( "right" );
 
 	buildingRight.callback = function( object ) {
 
@@ -129,23 +148,22 @@ function init() {
 
 	buildingRight.loadPartsJSON( "./assets/building.js", "./assets/buildingspire.js" );
 
-	//buildingLeft.setFrillPosition( 0, 234, 0 );
-
 	// Lights
 	
 	//scene.add( new THREE.AmbientLight( 0xcccccc ) );
 
 	// front left
 	var pointLight01 = new THREE.PointLight();
-	pointLight01.intensity = 1.0;
+	pointLight01.intensity = 0.9;
 	pointLight01.castShadow = false;
-	pointLight01.color = new THREE.Color().setRGB( 0.77, 0.78, 0.90 );
+	pointLight01.color = new THREE.Color().setRGB( 0.67, 0.68, 0.90 );
 	pointLight01.position.set( 100, 117.33, 42.00);
 	scene.add( pointLight01 );
 
 	// back center
+
 	var pointLight02 = new THREE.PointLight();
-	pointLight02.intensity = 1.2;
+	pointLight02.intensity = 1.5;
 	pointLight02.castShadow = false;
 	pointLight02.color = new THREE.Color().setRGB( 0.86, 0.15, 0.11 );
 	pointLight02.position.set( -100.04, 95.0, 0 );
@@ -188,7 +206,7 @@ function init() {
 	scene.add( cube01 = debugCube( 0, 0, 0, 0, 0, 0, 5 ) );
 	cube01.rotation.y = angleConvertHelper( "d", 45.0 );
 	cube01.rotation.z = angleConvertHelper( "d", 45.0 );
-	robotVernon.getEyeTarget( cube01 );
+	robotVernon.addChildToEyeTarget( cube01 );
 
 } 
 
@@ -214,6 +232,9 @@ function render() {
 
 	robotVernon.headRotation( controlsRobotHead );
 
+	bullet01.fire( controlsRobotHead, robotVernon.getHeadRotationY() );
+	bullet01.move( delta );
+
 	// Tests
 	//cameraPosition.y =+ (targetRotation - cameraPosition.y) * 0.5;
 
@@ -223,8 +244,19 @@ function render() {
 	cube01.rotation.y = cube01.rotation.y + delta;
 
 	// Console Logs
-
+	//var testPos =  THREE.Object3D();
+	//testPos.position.set( cube01.matrixWorld.getPosition.x , 0, 0);
+	//cube01.matrixWorld.getPosition()
 	//console.log( "detal: " + delta );
+	//console.log( "CubeX: " + cube01.matrixWorld.getPosition().x );
+	//console.log( "CubeY: " + cube01.matrixWorld.getPosition().y );
+	//console.log( "CubeZ: " + cube01.matrixWorld.getPosition().z );
+	//var numberY = robotVernon.getHeadRotationY();
+	//console.log( "RobotHeadY: " + numberY );
+	//console.log( "CubeRy: " + eyeTarget.rotation.y );
+	//console.log( "CubeRz: " + cube01.rotation.z );
+		
+	console.clear;
 
 	// Render
 

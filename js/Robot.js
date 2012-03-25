@@ -28,7 +28,7 @@ THREE.Robot = function() {
 
 	// internal helper variables
 	
-	this.headRotationSpeedY = 2.5;
+	this.headRotationSpeedY = 2.0;
 	this.headRotationSpeedZ = 0.3;
 	this.headRotationStartZ = 10.0;
 	this.headRotationClampZ = 2;
@@ -150,7 +150,7 @@ THREE.Robot = function() {
 	
 	};
 
-	this.getEyeTarget = function( object ) {
+	this.addChildToEyeTarget = function( object ) {
 
 		// sets postion of bullet form eye
 
@@ -158,7 +158,12 @@ THREE.Robot = function() {
 		this.eyeTarget.position.y = 5;
 		this.eyeTarget.add( object );		
 
-	}
+	};
+
+	this.getHeadRotationY = function() {
+		var rotationY = this.headMesh.rotation.y;
+		return rotationY;
+	};
 
 
 	// ##Internal Helper Methods

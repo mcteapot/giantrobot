@@ -13,6 +13,15 @@ function addRobot( object, x, y, z, s ) {
 
 }
 
+function addBullet( object ) {
+	
+	object.root.position.set( 0, 0, 0 );
+	scene.add( object.root );
+
+	object.setVisible( false );
+}
+
+
 function addBuilding( object, x, y, z, a, b, c, s ) {
 
 	object.root.position.set( x, y, z );
@@ -21,6 +30,7 @@ function addBuilding( object, x, y, z, a, b, c, s ) {
 	object.setFrillPosition( a, b, c );
 
 }
+
 
 
 function createGrid() {
@@ -49,12 +59,12 @@ function angleConvertHelper( type, delta ) {
 	
 	var convertsion;
 
-	if (type == "d") {
+	if (type === "d") {
 	
 		// Takes in degree and return radian
 		convertsion = delta * ( Math.PI / 180 );
 	
-	} else if (type = "r") {
+	} else if (type === "r") {
 	
 		// Takes in radiun and returns degree
 		convertsion = delta *  ( 180 / Math.PI ); 
