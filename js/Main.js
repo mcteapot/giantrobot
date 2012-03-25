@@ -203,10 +203,10 @@ function init() {
 
 	// Debug
 
-	scene.add( cube01 = debugCube( 0, 0, 0, 0, 0, 0, 5 ) );
-	cube01.rotation.y = angleConvertHelper( "d", 45.0 );
-	cube01.rotation.z = angleConvertHelper( "d", 45.0 );
-	robotVernon.addChildToEyeTarget( cube01 );
+	//scene.add( cube01 = debugCube( 0, 0, 0, 0, 0, 0, 5 ) );
+	//cube01.rotation.y = angleConvertHelper( "d", 45.0 );
+	//cube01.rotation.z = angleConvertHelper( "d", 45.0 );
+	//robotVernon.addChildToEyeTarget( cube01 );
 
 } 
 
@@ -241,7 +241,7 @@ function render() {
 
 	// Debug
 
-	cube01.rotation.y = cube01.rotation.y + delta;
+	//cube01.rotation.y = cube01.rotation.y + delta;
 
 	// Console Logs
 	//var testPos =  THREE.Object3D();

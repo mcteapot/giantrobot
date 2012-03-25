@@ -15,6 +15,7 @@ function addRobot( object, x, y, z, s ) {
 
 function addBullet( object ) {
 	
+	//object.root.position.set( 30, 100, 0 );
 	object.root.position.set( 0, 0, 0 );
 	scene.add( object.root );
 

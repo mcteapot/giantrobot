@@ -154,8 +154,8 @@ THREE.Robot = function() {
 
 		// sets postion of bullet form eye
 
-		this.eyeTarget.position.x = 15;
-		this.eyeTarget.position.y = 5;
+		this.eyeTarget.position.x = 10;
+		this.eyeTarget.position.y = 2.5;
 		this.eyeTarget.add( object );		
 
 	};

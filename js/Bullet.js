@@ -12,6 +12,8 @@ THREE.Bullet = function( eyeTarget ) {
 	// building rigging
 
 	this.bulletMesh = null;
+	this.bulletMeshLeft = null;
+	this.bulletMeshRight = null;
 
 	this.bulletGeometry = null;
 
@@ -27,12 +29,13 @@ THREE.Bullet = function( eyeTarget ) {
 	this.alive = false;
 
 	this.shiftY;
+	this.shiftZ = 5;
 
 	this.rotationX;
 	this.zMove = 0;
 	this.yMove = 0;
 
-	this.velocity = 4;
+	this.velocity = 120;
 
 	// debug flags
 	
@@ -65,8 +68,8 @@ THREE.Bullet = function( eyeTarget ) {
 		if ( this.alive === true ) {
 			//this.root.position.x +=  
 			//this.root.position.y += this.yMove
-			this.root.position.z += this.zMove 
-			this.root.position.y += this.yMove
+			this.root.position.z += this.zMove * ( this.velocity * delta )
+			this.root.position.y += this.yMove * ( this.velocity * delta )
 			//this.root.position.x += this.xMove + ( this.velocity * delta );
 			//this.root.position.y += this.yMove + ( this.velocity * delta );
 		
@@ -123,15 +126,17 @@ THREE.Bullet = function( eyeTarget ) {
 			bulletMaterial.ambient = new THREE.Color().setRGB( 0, 0.13, 0.66 );
 			bulletMaterial.specular = new THREE.Color().setRGB( 0.24, 0.21, 0.82 );
 
-			scope.bulletMesh = createGeometry( scope.bulletGeometry, bulletMaterial, 0, scope.shiftY, 0, 0, 0, 0, scope.modelScale );
+			scope.bulletMeshLeft = createGeometry( scope.bulletGeometry, bulletMaterial, 0, scope.shiftY, scope.shiftZ, 0, 0, 0, scope.modelScale );
+			scope.bulletMeshRight = createGeometry( scope.bulletGeometry, bulletMaterial, 0, scope.shiftY, -scope.shiftZ, 0, 0, 0, scope.modelScale );
 
 			// sets roots and rigs
 
-			scope.root.add( scope.bulletMesh );
+			scope.root.add( scope.bulletMeshLeft );
+			scope.root.add( scope.bulletMeshRight );
 
 			// cache meshes
 
-			scope.meshes = [ scope.bulletMesh ];
+			scope.meshes = [ scope.bulletMeshRight, scope.bulletMeshLeft ];
 			
 			scope.loaded = true;
 
@@ -147,8 +152,7 @@ THREE.Bullet = function( eyeTarget ) {
 	};
 
 	function setBulletTrajectory() {
-		//scope.xMove = 0;
-		//scope.yMove = 0.5;
+
 		scope.yMove = ( Math.cos( scope.rotationX ) );
 		scope.zMove = ( Math.sin( scope.rotationX ) );
 
