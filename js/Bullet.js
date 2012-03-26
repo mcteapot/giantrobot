@@ -17,8 +17,12 @@ THREE.Bullet = function( eyeTarget ) {
 
 	this.bulletGeometry = null;
 
+	this.bulletGMeshLeft = null;
+	this.bulletGMeshRight = null;
 
 	this.root = new THREE.Object3D();
+	this.gRoot = new THREE.Object3D();
+
 	this.eyeTargetLink = eyeTarget;
 
 	this.loaded = false;
@@ -29,17 +33,18 @@ THREE.Bullet = function( eyeTarget ) {
 	this.alive = false;
 
 	this.shiftY;
-	this.shiftZ = 5;
+	this.shiftZ = 4;
 
 	this.rotationX;
 	this.zMove = 0;
 	this.yMove = 0;
 
-	this.velocity = 120;
+	this.velocity = 150;
+	this.bulletGrowth = 10;
 
 	// debug flags
 	
-	this.debugInfo = true;
+	this.debugInfo = false;
 
 	// ##API
 	this.loadBullet = function( i, j, k ) {
@@ -57,6 +62,9 @@ THREE.Bullet = function( eyeTarget ) {
 			this.setVisible( true );
 			this.root.position.copy( this.eyeTargetLink.matrixWorld.getPosition() );
 			this.root.rotation.set( this.rotationX, 0, 0 );
+
+			//copyToGRoot();
+
 			setBulletTrajectory();
 			
 		} 
@@ -72,6 +80,13 @@ THREE.Bullet = function( eyeTarget ) {
 			this.root.position.y += this.yMove * ( this.velocity * delta )
 			//this.root.position.x += this.xMove + ( this.velocity * delta );
 			//this.root.position.y += this.yMove + ( this.velocity * delta );
+			if (this.root.scale.y < 1) {
+				this.root.scale.y += this.bulletGrowth  * delta;
+			} else {
+				this.root.scale.y = 1;
+			}
+
+			//copyToGRoot();
 		
 		}
 
@@ -105,9 +120,12 @@ THREE.Bullet = function( eyeTarget ) {
 			this.setVisible( false );
 			this.root.position.set( 0, 0, 0 );
 			this.root.rotation.set( 0, 0, 0 );
+			this.root.scale.y = 0.01;
 
 			this.xMove = 0;
 			this.yMove = 0;
+
+			//copyToGRoot();
 		
 		} 
 
@@ -125,6 +143,7 @@ THREE.Bullet = function( eyeTarget ) {
 			bulletMaterial.color = new THREE.Color().setRGB( 0.98, 0.11, 0.18 );
 			bulletMaterial.ambient = new THREE.Color().setRGB( 0, 0.13, 0.66 );
 			bulletMaterial.specular = new THREE.Color().setRGB( 0.24, 0.21, 0.82 );
+			bulletMaterial.metal = true;
 
 			scope.bulletMeshLeft = createGeometry( scope.bulletGeometry, bulletMaterial, 0, scope.shiftY, scope.shiftZ, 0, 0, 0, scope.modelScale );
 			scope.bulletMeshRight = createGeometry( scope.bulletGeometry, bulletMaterial, 0, scope.shiftY, -scope.shiftZ, 0, 0, 0, scope.modelScale );
@@ -133,10 +152,23 @@ THREE.Bullet = function( eyeTarget ) {
 
 			scope.root.add( scope.bulletMeshLeft );
 			scope.root.add( scope.bulletMeshRight );
+/*
+			scope.bulletGMeshLeft = createGeometry( scope.bulletGeometry, bulletMaterial, 0, scope.shiftY, scope.shiftZ, 0, 0, 0, scope.modelScale );
+			scope.bulletGMeshRight = createGeometry( scope.bulletGeometry, bulletMaterial, 0, scope.shiftY, -scope.shiftZ, 0, 0, 0, scope.modelScale );
+
+			scope.gRoot.add( scope.bulletGMeshLeft );
+			scope.gRoot.add( scope.bulletGMeshRight );
+*/
+			scope.root.scale.y = 0.01;
+
+			// groot set
+
+			copyToGRoot();
 
 			// cache meshes
 
 			scope.meshes = [ scope.bulletMeshRight, scope.bulletMeshLeft ];
+			//scope.meshes = [ scope.bulletMeshRight, scope.bulletMeshLeft, scope.bulletGMeshRight, scope.bulletGMeshLeft ];
 			
 			scope.loaded = true;
 
@@ -155,6 +187,15 @@ THREE.Bullet = function( eyeTarget ) {
 
 		scope.yMove = ( Math.cos( scope.rotationX ) );
 		scope.zMove = ( Math.sin( scope.rotationX ) );
+
+	};
+
+	function copyToGRoot() {
+
+			scope.gRoot.position = scope.root.position;
+			scope.gRoot.rotation = scope.root.rotation;
+			scope.gRoot.scale = scope.root.scale;
+			//scale.gRoot.overdraw = true;
 
 	};
 

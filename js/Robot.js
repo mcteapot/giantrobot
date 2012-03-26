@@ -161,6 +161,7 @@ THREE.Robot = function() {
 	};
 
 	this.getHeadRotationY = function() {
+		
 		var rotationY = this.headMesh.rotation.y;
 		return rotationY;
 	};

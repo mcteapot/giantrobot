@@ -14,7 +14,7 @@ var container, stats;
 
 var camera, scene, renderer, time;
 var particleLight, pointLight;
-		
+	
 var cameraTarget;
 
 var targetRotation = 0;
@@ -60,8 +60,9 @@ function init() {
 	// Timer
 	time = new Timer();
 
-	// Scene
+	// Main Scene
 	scene = new THREE.Scene();
+
 
 	// Camera
 	camera = new THREE.PerspectiveCamera( 53, window.innerWidth / window.innerHeight, 1, 5000 );
@@ -207,7 +208,6 @@ function init() {
 	//cube01.rotation.y = angleConvertHelper( "d", 45.0 );
 	//cube01.rotation.z = angleConvertHelper( "d", 45.0 );
 	//robotVernon.addChildToEyeTarget( cube01 );
-
 } 
 
 
@@ -216,6 +216,7 @@ function animate() {
 
 	requestAnimationFrame( animate );
 	render();
+	
 	stats.update();
 
 } 
@@ -259,7 +260,6 @@ function render() {
 	console.clear;
 
 	// Render
-
 	renderer.render( scene, camera );
 
 
