@@ -23,6 +23,8 @@ THREE.Bullet = function( eyeTarget ) {
 	this.root = new THREE.Object3D();
 	this.gRoot = new THREE.Object3D();
 
+	this.bulletLight = new THREE.PointLight();
+
 	this.eyeTargetLink = eyeTarget;
 
 	this.loaded = false;
@@ -39,7 +41,7 @@ THREE.Bullet = function( eyeTarget ) {
 	this.zMove = 0;
 	this.yMove = 0;
 
-	this.velocity = 150;
+	this.velocity = 190;
 	this.bulletGrowth = 10;
 
 	// debug flags
@@ -86,12 +88,18 @@ THREE.Bullet = function( eyeTarget ) {
 				this.root.scale.y = 1;
 			}
 
+			scope.bulletLight.intensity = 0.3;
+
 			//copyToGRoot();
 		
 		}
 
 		if ( this.root.position.y > 200 ) {
 
+			this.destory();
+		}
+
+		if ( this.root.position.z > 65 || this.root.position.z < -65 ) {
 			this.destory();
 		}
 
@@ -122,6 +130,8 @@ THREE.Bullet = function( eyeTarget ) {
 			this.root.rotation.set( 0, 0, 0 );
 			this.root.scale.y = 0.01;
 
+			scope.bulletLight.intensity = 0.0;
+
 			this.xMove = 0;
 			this.yMove = 0;
 
@@ -130,6 +140,11 @@ THREE.Bullet = function( eyeTarget ) {
 		} 
 
 	};
+
+	this.getAlive = function () {
+
+		return this.alive
+	}
 
 	// ##Internal Helper Methods
 
@@ -163,9 +178,17 @@ THREE.Bullet = function( eyeTarget ) {
 
 			// groot set
 
-			copyToGRoot();
+			//copyToGRoot();
+
+			// create light
+			scope.bulletLight.intensity = 0.0;
+			scope.bulletLight.castShadow = false;
+			scope.bulletLight.color = new THREE.Color().setRGB( 0.98, 0.11, 0.18 );
+			scope.root.add( scope.bulletLight );
 
 			// cache meshes
+
+
 
 			scope.meshes = [ scope.bulletMeshRight, scope.bulletMeshLeft ];
 			//scope.meshes = [ scope.bulletMeshRight, scope.bulletMeshLeft, scope.bulletGMeshRight, scope.bulletGMeshLeft ];

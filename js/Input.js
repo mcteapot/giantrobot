@@ -18,9 +18,10 @@ function onDocumentMouseDown( event ) {
 
 function onDocumentMouseMove( event ) {
 
-	mouseX = event.clientX - windowHalfX;
-	mouseXOnMouseDown = event.clientX - windowHalfX;
-	targetRotation = targetRotationOnMouseDown + ( mouseX - mouseXOnMouseDown ) * 0.02;
+	mouseX = event.clientX;
+	//mouseXOnMouseDown = event.clientX - windowHalfX;
+	//targetRotation = targetRotationOnMouseDown + ( mouseX - mouseXOnMouseDown ) * 0.02;
+
 
 }
 

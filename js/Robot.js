@@ -23,26 +23,42 @@ THREE.Robot = function() {
 	this.root = new THREE.Object3D();
 	this.eyeTarget = new THREE.Object3D();
 
+	this.eyesMaterial;
+	this.eyeColorGray = new THREE.Color().setRGB( 0.74, 0.75, 0.75 );
+	this.eyeColorRend = new THREE.Color().setRGB( 0.94, 0.05, 0.05 );
+
 	this.loaded = false;
 	this.meshes = [];
 
 	// internal helper variables
 	
-	this.headRotationSpeedY = 2.0;
+	this.normalizeRatio = 59.0;
+
+	this.headRotationSpeedY = 2.5;
 	this.headRotationSpeedZ = 0.3;
 	this.headRotationStartZ = 10.0;
-	this.headRotationClampZ = 2;
-	this.maxHeadRotationY = 30;
+	this.headRotationSpeedNormalizeY = 0.0;
+	this.headRotationSpeedNormalizeZ = 0.0;
 
-	this.bodyRotationSpeedY = 0.5;
-	this.bodyRotationSpeedZ = 0.15;
-	this.maxBodyRotationY = 10;
+	this.headRotationClampZ = 2;
+	this.maxHeadRotationY = 75;
+
+	this.bodyRotationSpeedY = 0.9;
+	this.bodyRotationSpeedZ = 0.19;
+	this.bodyRotationSpeedNormalizeY = 0.0;
+	this.bodyRotationSpeedNormalizeZ = 0.0;
+
+	this.maxBodyRotationY = 25;
 	this.bodyRotationStartZ = -10;
+
+	this.glow = false;
 
 	// debug flags
 
 	this.debugInfo = false;
 	this.debugHead = false;
+	this.debugNormalize = false;
+
 
 
 
@@ -58,7 +74,9 @@ THREE.Robot = function() {
 
 	};
 
-	this.headRotation = function( controls ) {
+	this.headRotation = function( controls, delta ) {
+
+		normalizeSpeed( delta ); 
 
 		// keyp press right or "d"
 
@@ -68,7 +86,7 @@ THREE.Robot = function() {
 
 			if ( angleConvert( "r", this.headMesh.rotation.y ) < this.maxHeadRotationY ) {
 			
-				this.headMesh.rotation.y = ( this.headMesh.rotation.y + angleConvert( "d", this.headRotationSpeedY) );
+				this.headMesh.rotation.y = ( this.headMesh.rotation.y + angleConvert( "d", this.headRotationSpeedNormalizeY ) );
 				
 				if ( ( angleConvert( "r", this.headMesh.rotation.y ) > -this.headRotationClampZ ) &&  (angleConvert( "r", this.headMesh.rotation.y ) < this.headRotationClampZ ) ) {
 			
@@ -77,13 +95,13 @@ THREE.Robot = function() {
 
 				} else if ( angleConvert( "r", this.headMesh.rotation.y) > 0 ) {
 			
-					this.headMesh.rotation.z = ( this.headMesh.rotation.z + angleConvert( "d", this.headRotationSpeedZ ) );
-					this.bodyMesh.rotation.z = ( this.bodyMesh.rotation.z + angleConvert( "d", this.bodyRotationSpeedZ ) );
+					this.headMesh.rotation.z = ( this.headMesh.rotation.z + angleConvert( "d", this.headRotationSpeedNormalizeZ ) );
+					this.bodyMesh.rotation.z = ( this.bodyMesh.rotation.z + angleConvert( "d", this.bodyRotationSpeedNormalizeZ ) );
 				
 				} else if ( angleConvert( "r", this.headMesh.rotation.y) < 0 ) {
 			
-					this.headMesh.rotation.z = ( this.headMesh.rotation.z - angleConvert( "d", this.headRotationSpeedZ ) );
-					this.bodyMesh.rotation.z = ( this.bodyMesh.rotation.z - angleConvert( "d", this.bodyRotationSpeedZ ) );
+					this.headMesh.rotation.z = ( this.headMesh.rotation.z - angleConvert( "d", this.headRotationSpeedNormalizeZ ) );
+					this.bodyMesh.rotation.z = ( this.bodyMesh.rotation.z - angleConvert( "d", this.bodyRotationSpeedNormalizeZ ) );
 				
 				} 
 
@@ -91,7 +109,7 @@ THREE.Robot = function() {
 
 				if ( angleConvert( "r", this.bodyMesh.rotation.y ) > -this.maxBodyRotationY ) {
 			
-					this.bodyMesh.rotation.y = ( this.bodyMesh.rotation.y - angleConvert( "d", this.bodyRotationSpeedY ) );
+					this.bodyMesh.rotation.y = ( this.bodyMesh.rotation.y - angleConvert( "d", this.bodyRotationSpeedNormalizeY ) );
 			
 				}
 			
@@ -107,7 +125,7 @@ THREE.Robot = function() {
 
 			if ( angleConvert( "r", this.headMesh.rotation.y ) > -this.maxHeadRotationY ) {
 			
-				this.headMesh.rotation.y = ( this.headMesh.rotation.y - angleConvert( "d", this.headRotationSpeedY ) );
+				this.headMesh.rotation.y = ( this.headMesh.rotation.y - angleConvert( "d",  this.headRotationSpeedNormalizeY ) );
 				
 				if ( ( angleConvert( "r", this.headMesh.rotation.y ) > -this.headRotationClampZ ) &&  ( angleConvert( "r", this.headMesh.rotation.y ) < this.headRotationClampZ) ) {
 			
@@ -116,13 +134,13 @@ THREE.Robot = function() {
 
 				} else if ( angleConvert( "r", this.headMesh.rotation.y) > 0 ) {
 			
-					this.headMesh.rotation.z = ( this.headMesh.rotation.z - angleConvert( "d", this.headRotationSpeedZ ) );
-					this.bodyMesh.rotation.z = ( this.bodyMesh.rotation.z - angleConvert( "d", this.bodyRotationSpeedZ ) );
+					this.headMesh.rotation.z = ( this.headMesh.rotation.z - angleConvert( "d", this.headRotationSpeedNormalizeZ ) );
+					this.bodyMesh.rotation.z = ( this.bodyMesh.rotation.z - angleConvert( "d", this.bodyRotationSpeedNormalizeZ ) );
 				
 				} else if ( angleConvert( "r", this.headMesh.rotation.y) < 0 ) {
 			
-					this.headMesh.rotation.z = ( this.headMesh.rotation.z + angleConvert( "d", this.headRotationSpeedZ ) );
-					this.bodyMesh.rotation.z = ( this.bodyMesh.rotation.z + angleConvert( "d", this.bodyRotationSpeedZ ) );
+					this.headMesh.rotation.z = ( this.headMesh.rotation.z + angleConvert( "d", this.headRotationSpeedNormalizeZ ) );
+					this.bodyMesh.rotation.z = ( this.bodyMesh.rotation.z + angleConvert( "d", this.bodyRotationSpeedNormalizeZ ) );
 				
 				}
 
@@ -130,7 +148,7 @@ THREE.Robot = function() {
 
 				if ( angleConvert( "r", this.bodyMesh.rotation.y ) < this.maxBodyRotationY ) {
 			
-					this.bodyMesh.rotation.y = ( this.bodyMesh.rotation.y + angleConvert( "d", this.bodyRotationSpeedY ) );
+					this.bodyMesh.rotation.y = ( this.bodyMesh.rotation.y + angleConvert( "d", this.bodyRotationSpeedNormalizeY ) );
 			
 				} 
 			
@@ -150,6 +168,27 @@ THREE.Robot = function() {
 	
 	};
 
+	this.fire = function( controls, activeBullet ) {
+		/*****
+		----------//fix eye glow mothafucka!!!!
+		*****/
+		if ( controls.fire && activeBullet && (this.glow === false) ) {
+
+			this.eyesMaterial.color = new THREE.Color().setRGB( 0.94, 0.05, 0.05 );
+			this.glow = true;
+
+		} else {
+
+			scope.eyesMaterial.color = scope.eyeColorGray;
+
+		}
+
+		if ( activeBullet === false ) {
+
+			this.glow = false;
+		}
+	}; 
+
 	this.addChildToEyeTarget = function( object ) {
 
 		// sets postion of bullet form eye
@@ -168,6 +207,30 @@ THREE.Robot = function() {
 
 
 	// ##Internal Helper Methods
+
+	function normalizeSpeed( delta ) {
+
+		scope.headRotationSpeedNormalizeY = scope.normalizeRatio * scope.headRotationSpeedY * delta;
+		scope.headRotationSpeedNormalizeZ = scope.normalizeRatio * scope.headRotationSpeedZ * delta;
+
+		scope.bodyRotationSpeedNormalizeY = scope.normalizeRatio * scope.bodyRotationSpeedY * delta;
+		scope.bodyRotationSpeedNormalizeZ = scope.normalizeRatio * scope.bodyRotationSpeedZ * delta;
+
+		if ( this.debugNormalize ) {
+
+			console.group( "SpeedNormalize" );
+				console.log( "headRotationSpeedNormalizeY: " + scope.headRotationSpeedNormalizeY );
+				console.log( "headRotationSpeedNormalizeZ: " + scope.headRotationSpeedNormalizeZ );
+				console.log( "bodyRotationSpeedNormalizeY: " + scope.bodyRotationSpeedNormalizeY );
+				console.log( "bodyRotationSpeedNormalizeZ: " + scope.bodyRotationSpeedNormalizeZ );
+			console.groupEnd(); // end group
+		
+		}
+
+
+
+
+	};
 
 	function createBody( geometry ) {
 
@@ -243,12 +306,12 @@ THREE.Robot = function() {
 
 			// eyes
 
-			var eyesMaterial = new THREE.MeshPhongMaterial();
-			eyesMaterial.color = new THREE.Color().setRGB( 0.94, 0.95, 0.98 );
-			eyesMaterial.ambient = new THREE.Color().setRGB( 1, 0, 0.08 );
-			eyesMaterial.specular = new THREE.Color().setRGB( 0, 0.25, 1 );
+			scope.eyesMaterial = new THREE.MeshPhongMaterial();
+			scope.eyesMaterial.color = scope.eyeColorGray;
+			scope.eyesMaterial.ambient = new THREE.Color().setRGB( 1, 0, 0.08 );
+			scope.eyesMaterial.specular = new THREE.Color().setRGB( 0, 0.25, 1 );
 
-			scope.eyesMesh = createGeometry( scope.eyesGeometry, eyesMaterial, 0, 0, 0, 0, 0, 0, scope.modelScale );
+			scope.eyesMesh = createGeometry( scope.eyesGeometry, scope.eyesMaterial, 0, 0, 0, 0, 0, 0, scope.modelScale );
 		
 			// sets roots and rigs body
 

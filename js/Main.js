@@ -9,6 +9,9 @@ var SCREEN_WIDTH = window.innerWidth;
 var SCREEN_HEIGHT = window.innerHeight;
 var SHADOW_MAP_WIDTH = 2048;
 var SHADOW_MAP_HEIGHT = 1024;
+var stageWidth = 768;
+var stageHeight = 1024;
+
 
 var container, stats;
 
@@ -57,6 +60,10 @@ function init() {
 
 	container = document.createElement( 'div' );
 	document.body.appendChild( container );
+	container.style.width = stageWidth;
+	container.style.height = stageHeight;
+	
+
 	// Timer
 	time = new Timer();
 
@@ -69,7 +76,8 @@ function init() {
 	camera.position.set( 155.0,65.0,0.0 );
 
 	camera.rotation.set( 0.0, 1.5, 0.0 );
-	camera.aspect = SCREEN_WIDTH / SCREEN_HEIGHT;
+	//camera.aspect = SCREEN_WIDTH / SCREEN_HEIGHT;
+	camera.aspect = stageWidth / stageHeight;
 	camera.updateProjectionMatrix();
 
 	cameraTarget = new THREE.Vector3( 0.0, 120.0, 0.0  );
@@ -79,7 +87,8 @@ function init() {
 
 	// Renderer
 	renderer = new THREE.WebGLRenderer( { antialias: true, clearAlpha: 1, clearColor: 0x808080 } );
-	renderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
+	//renderer.setSize( SCREEN_WIDTH, SCREEN_HEIGHT );
+	renderer.setSize(stageWidth, stageHeight);
 	renderer.shadowCameraNear = 3;
 	renderer.shadowCameraFar = this.camera.far;
 	renderer.shadowCameraFov = 50;
@@ -178,13 +187,13 @@ function init() {
 	pointLight03.position.set( 100, 32.50, -187.50 );
 	scene.add( pointLight03 );
 
-
+/*
 	// WindowResize resizes screan according to screen
 	THREEx.WindowResize( renderer, camera );
 
 	container.appendChild( renderer.domElement );
 
-
+*/
 		
 	// FPS stats 
 	stats = new Stats();
@@ -197,6 +206,7 @@ function init() {
 	document.addEventListener( 'keyup', onKeyUp, false );
 	document.addEventListener( 'mousemove', onDocumentMouseDown, false );
 
+	//document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 	//document.addEventListener( 'mousedown', onDocumentMouseDown, false );
 	//document.addEventListener( 'touchstart', onDocumentTouchStart, false );
 	//document.addEventListener( 'touchmove', onDocumentTouchMove, false );
@@ -224,6 +234,11 @@ function animate() {
 // ## Render the 3D Scene
 function render() {
 
+	var x = (window.innerWidth / 2) - (container.offsetWidth / 2);
+	var y = (window.offsetHeight / 2) - (container.offsetHeight / 2);              
+	container.style.top = y;
+	container.style.left = x;
+	container.style.display = "block";
 	//var delta = Date.now() * 0.0005;
 
 	// Set delta
@@ -231,8 +246,8 @@ function render() {
 
 	// Game Code
 
-	robotVernon.headRotation( controlsRobotHead );
-
+	robotVernon.headRotation( controlsRobotHead, delta );
+	robotVernon.fire( controlsRobotHead, bullet01.getAlive );
 	bullet01.fire( controlsRobotHead, robotVernon.getHeadRotationY() );
 	bullet01.move( delta );
 
@@ -256,6 +271,7 @@ function render() {
 	//console.log( "RobotHeadY: " + numberY );
 	//console.log( "CubeRy: " + eyeTarget.rotation.y );
 	//console.log( "CubeRz: " + cube01.rotation.z );
+	//console.log( "mouseX: " + mouseX);
 		
 	console.clear;
 
