@@ -22,6 +22,15 @@ function addBullet( object ) {
 	object.setVisible( false );
 }
 
+function addExplosion( object ) {
+	
+	object.root.position.set( 0, 0, 0 );
+	object.root.scale.set( 0.3, 0.3, 0.3 );
+	scene.add( object.root )
+
+	object.setVisible( false );
+}
+
 
 function addBuilding( object, x, y, z, a, b, c, s ) {
 

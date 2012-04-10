@@ -17,6 +17,7 @@ var container, stats;
 
 var camera, scene, renderer, time;
 var particleLight, pointLight;
+var composer;
 	
 var cameraTarget;
 
@@ -31,6 +32,7 @@ var robotVernon;
 var buildingLeft, buildingRight;
 var eyeTarget;
 var bullet01;
+var explosion01;
 
 var mouseX = 0;
 var mouseY = 0;
@@ -40,7 +42,9 @@ var delta;
 var controlsRobotHead = {
 	turnLeft: false,
 	turnRight: false,
-	fire: false
+	fire: false,
+	eyeLight: false,
+	explosion: false
 }
 
 // Debut objects
@@ -100,6 +104,19 @@ function init() {
 	renderer.shadowMapSoft = true;
 	container.appendChild( renderer.domElement );
 
+	// Postprocessing
+	/*
+	var renderModel = new THREE.RenderPass( scene, camera );
+	var effectFilm = new THREE.FilmPass( 0.35, 0.75, 2048, false );
+
+	effectFilm.renderToScreen = true;
+
+	composer = new THREE.EffectComposer( renderer );
+
+	composer.addPass( renderModel );
+	composer.addPass( effectFilm );
+	*/
+
 	// Grid
 
 	scene.add( createGrid() );
@@ -125,14 +142,21 @@ function init() {
 
 	bullet01.callback = function( object ) {
 
-		addBullet( bullet01 );
+		addBullet( object );
 
 	};
 
 	bullet01.loadBullet( 1, 10, 2 );
 
 
+	explosion01 = new THREE.Explosion();
+	explosion01.callback = function( object ) {
 
+		addExplosion( object );
+
+	};
+
+	explosion01.loadExplotion( 9 );
 
 
 	// Create Buildings
@@ -171,7 +195,6 @@ function init() {
 	scene.add( pointLight01 );
 
 	// back center
-
 	var pointLight02 = new THREE.PointLight();
 	pointLight02.intensity = 1.5;
 	pointLight02.castShadow = false;
@@ -181,11 +204,13 @@ function init() {
 
 	// front right
 	var pointLight03 = new THREE.PointLight();
-	pointLight03.intensity = 0.6;
+	pointLight03.intensity = 0.2;
 	pointLight03.castShadow = false;
 	pointLight03.color = new THREE.Color().setRGB( 0.61, 0.71, 0.99 );
 	pointLight03.position.set( 100, 32.50, -187.50 );
 	scene.add( pointLight03 );
+
+	
 
 /*
 	// WindowResize resizes screan according to screen
@@ -194,6 +219,8 @@ function init() {
 	container.appendChild( renderer.domElement );
 
 */
+
+
 		
 	// FPS stats 
 	stats = new Stats();
@@ -249,35 +276,25 @@ function render() {
 	robotVernon.headRotation( controlsRobotHead, delta );
 	robotVernon.fire( controlsRobotHead, bullet01.getAlive );
 	bullet01.fire( controlsRobotHead, robotVernon.getHeadRotationY() );
+	explosion01.explode( controlsRobotHead, bullet01.explosionVector, delta );
 	bullet01.move( delta );
 
 	// Tests
-	//cameraPosition.y =+ (targetRotation - cameraPosition.y) * 0.5;
-
 
 	// Debug
 
-	//cube01.rotation.y = cube01.rotation.y + delta;
-
 	// Console Logs
-	//var testPos =  THREE.Object3D();
-	//testPos.position.set( cube01.matrixWorld.getPosition.x , 0, 0);
-	//cube01.matrixWorld.getPosition()
-	//console.log( "detal: " + delta );
-	//console.log( "CubeX: " + cube01.matrixWorld.getPosition().x );
-	//console.log( "CubeY: " + cube01.matrixWorld.getPosition().y );
-	//console.log( "CubeZ: " + cube01.matrixWorld.getPosition().z );
-	//var numberY = robotVernon.getHeadRotationY();
-	//console.log( "RobotHeadY: " + numberY );
-	//console.log( "CubeRy: " + eyeTarget.rotation.y );
-	//console.log( "CubeRz: " + cube01.rotation.z );
+
 	//console.log( "mouseX: " + mouseX);
 		
 	console.clear;
 
 	// Render
 	renderer.render( scene, camera );
-
+/*	
+	renderer.clear();
+	composer.render( delta );
+*/
 
 } 
 

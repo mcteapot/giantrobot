@@ -27,6 +27,8 @@ THREE.Bullet = function( eyeTarget ) {
 
 	this.eyeTargetLink = eyeTarget;
 
+	this.explosionVector = new THREE.Vector3();
+
 	this.loaded = false;
 	this.meshes = [];
 
@@ -41,7 +43,7 @@ THREE.Bullet = function( eyeTarget ) {
 	this.zMove = 0;
 	this.yMove = 0;
 
-	this.velocity = 190;
+	this.velocity = 130;
 	this.bulletGrowth = 10;
 
 	// debug flags
@@ -59,29 +61,37 @@ THREE.Bullet = function( eyeTarget ) {
 	this.fire = function ( controls, rotation ) {
 		
 		if ( (this.alive === false) && this.loaded && controls.fire ) {
+			
+			controls.fire = false;
+			controls.eyeLight = true;
 			this.rotationX = -rotation;
 			this.alive = true;
 			this.setVisible( true );
 			this.root.position.copy( this.eyeTargetLink.matrixWorld.getPosition() );
 			this.root.rotation.set( this.rotationX, 0, 0 );
 
+
 			//copyToGRoot();
 
 			setBulletTrajectory();
 			
-		} 
+		} else if ( (this.alive === true) && this.loaded && controls.fire ) {
+			
+			controls.fire = false;
+			controls.explosion = true;
+			this.explosionVector.copy( this.root.position );
+			this.destory();
+		}
 	
 	};
 
 	this.move = function ( delta ) {
 
 		if ( this.alive === true ) {
-			//this.root.position.x +=  
-			//this.root.position.y += this.yMove
+
 			this.root.position.z += this.zMove * ( this.velocity * delta )
 			this.root.position.y += this.yMove * ( this.velocity * delta )
-			//this.root.position.x += this.xMove + ( this.velocity * delta );
-			//this.root.position.y += this.yMove + ( this.velocity * delta );
+
 			if (this.root.scale.y < 1) {
 				this.root.scale.y += this.bulletGrowth  * delta;
 			} else {
@@ -184,6 +194,7 @@ THREE.Bullet = function( eyeTarget ) {
 			scope.bulletLight.intensity = 0.0;
 			scope.bulletLight.castShadow = false;
 			scope.bulletLight.color = new THREE.Color().setRGB( 0.98, 0.11, 0.18 );
+			scope.bulletLight.position.set( 15, 5, 0 );
 			scope.root.add( scope.bulletLight );
 
 			// cache meshes

@@ -25,7 +25,7 @@ THREE.Robot = function() {
 
 	this.eyesMaterial;
 	this.eyeColorGray = new THREE.Color().setRGB( 0.74, 0.75, 0.75 );
-	this.eyeColorRend = new THREE.Color().setRGB( 0.94, 0.05, 0.05 );
+	this.eyeColorRed = new THREE.Color().setRGB( 0.94, 0.05, 0.05 );
 
 	this.loaded = false;
 	this.meshes = [];
@@ -51,7 +51,6 @@ THREE.Robot = function() {
 	this.maxBodyRotationY = 25;
 	this.bodyRotationStartZ = -10;
 
-	this.glow = false;
 
 	// debug flags
 
@@ -169,24 +168,19 @@ THREE.Robot = function() {
 	};
 
 	this.fire = function( controls, activeBullet ) {
-		/*****
-		----------//fix eye glow mothafucka!!!!
-		*****/
-		if ( controls.fire && activeBullet && (this.glow === false) ) {
 
-			this.eyesMaterial.color = new THREE.Color().setRGB( 0.94, 0.05, 0.05 );
-			this.glow = true;
+		if ( controls.eyeLight && activeBullet ) {
+
+			this.eyesMaterial.color = this.eyeColorRed;
+			controls.eyeLight = false;
+			
 
 		} else {
 
-			scope.eyesMaterial.color = scope.eyeColorGray;
+			this.eyesMaterial.color = this.eyeColorGray;
 
 		}
 
-		if ( activeBullet === false ) {
-
-			this.glow = false;
-		}
 	}; 
 
 	this.addChildToEyeTarget = function( object ) {
@@ -200,8 +194,9 @@ THREE.Robot = function() {
 	};
 
 	this.getHeadRotationY = function() {
-		
-		var rotationY = this.headMesh.rotation.y;
+		if ( this.headMesh.rotation.y ) {
+			var rotationY = this.headMesh.rotation.y;
+		}
 		return rotationY;
 	};
 
